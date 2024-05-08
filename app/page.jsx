@@ -133,7 +133,7 @@ export default function Home() {
             <div className="p-4 sm:ml-64">
                 <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14">
                     <div className="grid grid-cols-3 gap-4 mb-4">
-                        <div className="flex items-center justify-center h-32 md:h-96 rounded bg-gray-50 dark:bg-gray-800">
+                        <div className="flex flex-col items-center justify-center h-32 md:h-96 rounded bg-gray-50 dark:bg-gray-800">
                             {/* <button type="button" className="rounded-full bg-indigo-600 p-2 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                                 <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                     <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
@@ -141,12 +141,22 @@ export default function Home() {
                             </button> */}
                             {/* <div className="ml-4 text-white">Add Image</div>
         <div className="rounded-md h-12 w-12 border-4 border-t-4 border-blue-500 animate-spin absolute" /> */}
+                        <div className="flex flex-col justify-center items-center w-full h-full">
                             <img
-                                srcSet= {`/.netlify/images?url=images/corgi.jpg&w=300&h=300`}
+                                srcSet= {`/.netlify/images?url=images/corgi.jpg&w=200&h=200`}
                                 alt="Corgi"
                             />
-                                                          {/* srcSet= {`/.netlify/images?url=images/corgi.jpg&w=${width}&h=${height}&fit=${fit.toLowerCase()}&fm=${format.toLowerCase()}&q=${imageQuality}`}   */}
+                          </div>
+                          <div className="flex flex-row justify-center items-center w-full h-24">
+                          <button type="button" className="inline-flex mr-10 w-20 justify-center disabled:cursor-not-allowed items-center gap-x-1.5 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                        Edit
+                                    </button>
+                                    <button type="button" className="inline-flex w-20 justify-center disabled:cursor-not-allowed items-center gap-x-1.5 rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600">
+                                        Delete
+                                    </button>
+                          </div>                                 {/* srcSet= {`/.netlify/images?url=images/corgi.jpg&w=${width}&h=${height}&fit=${fit.toLowerCase()}&fm=${format.toLowerCase()}&q=${imageQuality}`}   */}
                         </div>
+
                     </div>
                 </div>
             </div>
