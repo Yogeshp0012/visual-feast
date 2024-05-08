@@ -143,7 +143,7 @@ export default function Home() {
         <div className="rounded-md h-12 w-12 border-4 border-t-4 border-blue-500 animate-spin absolute" /> */}
                         <div className="flex flex-col justify-center items-center w-full h-full">
                             <img
-                                srcSet= {`/.netlify/images?url=images/corgi.jpg&w=200&h=200`}
+                                srcSet= {`/.netlify/images?url=images/corgi.jpg&w=420&h=300`}
                                 alt="Corgi"
                             />
                           </div>
