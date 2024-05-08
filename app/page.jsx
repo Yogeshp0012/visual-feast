@@ -160,7 +160,7 @@ export default function Home() {
                         {displayImages && displayImages.map((imageObj) => (
                             <>                  <div className="flex flex-col items-center justify-center h-32 md:h-96 rounded bg-gray-50 dark:bg-gray-800">          <div className="flex flex-col justify-center items-center w-full h-full">
                             <img
-                                srcSet={`/.netlify/images?url=https://images.unsplash.com/photo-1715128083452-065d5045bac1?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&w=420&h=300`}
+                                srcSet={`/.netlify/images?url=${imageObj.image}`}
                                 alt="Corgi"
                             />
                         </div>
