@@ -3,6 +3,11 @@
 import { useEffect, useState } from "react";
 
 export default function Home() {
+    const addNewImage = (image) => {
+        setDisplayImages([{ image: `https://images.unsplash.com/${image}`, imageID: "1" }]);
+        setOpenModal(false);
+        console.log(displayImages);
+    }
 
     const readFile = () => {
         const fileInput = document.getElementById('file-upload');
@@ -25,6 +30,10 @@ export default function Home() {
     const [fit, setFit] = useState("Contain");
     const [format, setFormat] = useState("WEBP");
     const [fileName, setFileName] = useState("")
+    const [imageName, setImageName] = useState("Test")
+    const [imageUrl, setImageUrl] = useState("photo-1715128083452-065d5045bac1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwyfHx8ZW58MHx8fHx8")
+    const [openModal, setOpenModal] = useState(false)
+    const [displayImages, setDisplayImages] = useState([])
 
     useEffect(() => {
         const user = localStorage.getItem('username');
@@ -34,6 +43,7 @@ export default function Home() {
         else {
             fetch("https://randomuser.me/api/").then((res) => res.json()).then((data) => setUsername(data.results[0]["name"]["first"])).then(() => localStorage.setItem("username", username));
         }
+        setDisplayImages([]);
     }, [username]);
 
     return (
@@ -146,35 +156,37 @@ export default function Home() {
             <div className="p-4 sm:ml-64">
                 <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14">
                     <div className="grid grid-cols-3 gap-4 mb-4">
-                        <div className="flex flex-col items-center justify-center h-32 md:h-96 rounded bg-gray-50 dark:bg-gray-800">
-                            {/* <button type="button" className="rounded-full bg-indigo-600 p-2 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                                <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                    <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
-                                </svg>
-                            </button> */}
-                            {/* <div className="ml-4 text-white">Add Image</div>
-        <div className="rounded-md h-12 w-12 border-4 border-t-4 border-blue-500 animate-spin absolute" /> */}
-                            <div className="flex flex-col justify-center items-center w-full h-full">
-                                <img
-                                    srcSet={`/.netlify/images?url=https://images.unsplash.com/photo-1715128083452-065d5045bac1?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&w=420&h=300`}
-                                    alt="Corgi"
-                                />
-                            </div>
-                            <div className="flex flex-row justify-center items-center w-full h-24">
-                                <button type="button" className="inline-flex mr-10 w-4 lg:w-32 justify-center disabled:cursor-not-allowed items-center gap-x-1.5 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                                    Edit
-                                </button>
-                                <button type="button" className="inline-flex w-4 lg:w-32 justify-center disabled:cursor-not-allowed items-center gap-x-1.5 rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600">
-                                    Delete
-                                </button>
-                            </div>                                 {/* srcSet= {`/.netlify/images?url=images/corgi.jpg&w=${width}&h=${height}&fit=${fit.toLowerCase()}&fm=${format.toLowerCase()}&q=${imageQuality}`}   */}
+                        {displayImages && displayImages.map((imageObj) => (
+                            <>                  <div className="flex flex-col items-center justify-center h-32 md:h-96 rounded bg-gray-50 dark:bg-gray-800">          <div className="flex flex-col justify-center items-center w-full h-full">
+                            <img
+                                srcSet={`/.netlify/images?url=https://images.unsplash.com/photo-1715128083452-065d5045bac1?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&w=420&h=300`}
+                                alt="Corgi"
+                            />
                         </div>
+                        <div className="flex flex-row justify-center items-center w-full h-24">
+                            <button type="button" className="inline-flex mr-10 w-4 lg:w-32 justify-center disabled:cursor-not-allowed items-center gap-x-1.5 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                Edit
+                            </button>
+                            <button type="button" className="inline-flex w-4 lg:w-32 justify-center disabled:cursor-not-allowed items-center gap-x-1.5 rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600">
+                                Delete
+                            </button>
+                        </div> </div> </>
+                        ))}
 
+
+                    {(displayImages.length == 0) && <><div className="flex flex-col items-center justify-center h-32 md:h-96 rounded bg-gray-50 dark:bg-gray-800">
+                        {!openModal && <button onClick={() => setOpenModal(true)} type="button" className="w-48 rounded-md bg-indigo-600 p-2 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                            <div className="text-white">Add Image</div>
+                        </button>}
+                        {openModal && <div className="rounded-md h-12 w-12 border-4 border-t-4 border-blue-500 animate-spin absolute" />}
+                    </div></>
+                        //   srcSet= {`/.netlify/images?url=images/corgi.jpg&w=${width}&h=${height}&fit=${fit.toLowerCase()}&fm=${format.toLowerCase()}&q=${imageQuality}`}
+                    }
                     </div>
                 </div>
             </div>
             <>
-                <div className="hidden relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+                {openModal && <div className="relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true">
                     <div className="fixed inset-0 bg-gray-900 bg-opacity-75 transition-opacity" />
                     <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
                         <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
@@ -188,7 +200,7 @@ export default function Home() {
                                                 <label htmlFor="image-name" className="block text-sm font-medium leading-6 text-white">Image
                                                     Name</label>
                                                 <div className="mt-2">
-                                                    <input type="text" name="image-name" id="image-name" autoComplete="given-name" className="block p-2 w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6 outline-none" />
+                                                    <input type="text" value={imageName} onChange={(e) => setImageName(e.target.value)} name="image-name" id="image-name" autoComplete="given-name" className="block p-2 w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6 outline-none" />
                                                 </div>
                                             </div>
                                             <div className="mt-2 w-[20vw]">
@@ -196,7 +208,7 @@ export default function Home() {
                                                     URL</label>
                                                 <div className="flex mt-2 rounded-md bg-white/5 ring-1 ring-inset ring-white/10 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-500">
                                                     <span className="flex select-none items-center pl-3 text-gray-500 sm:text-sm">images.unsplash.com/</span>
-                                                    <input type="text" name="username" id="username" autoComplete="username" className="flex-1 outline-none border-0 bg-transparent py-1.5 pl-1 text-white focus:ring-0 sm:text-sm sm:leading-6" placeholder="photo-1715128083452-065d5045bac1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwyfHx8ZW58MHx8fHx8" />
+                                                    <input value={imageUrl} onChange={(e) => setImageUrl("https://images.unsplash.com/" + e.target.value)} type="text" name="image-url" id="image-url" autoComplete="image-url" className="flex-1 outline-none border-0 bg-transparent py-1.5 pl-1 text-white focus:ring-0 sm:text-sm sm:leading-6" />
                                                 </div>
 
                                             </div>
@@ -225,16 +237,15 @@ export default function Home() {
                                     </div>
                                 </div>
                                 <div className="bg-gray-800 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                                    <button type="button" className="ml-3 inline-flex disabled:cursor-not-allowed items-center gap-x-1.5 w-16 justify-center  rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                    <button onClick={() => addNewImage("photo-1715128083452-065d5045bac1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwyfHx8ZW58MHx8fHx8")} type="button" className="ml-3 inline-flex disabled:cursor-not-allowed items-center gap-x-1.5 justify-center  rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 w-20">
                                         Add
                                     </button>
-                                    <button type="button" className="mt-3 inline-flex w-full justify-center rounded-md px-3 py-2 text-sm font-semibold text-gray-100 shadow-sm ring-1 ring-inset ring-gray-300 sm:mt-0 sm:w-auto">Cancel</button>
-                                    <button type="button" className="mt-3 mr-3 inline-flex w-full justify-center rounded-md px-3 py-2 text-sm font-semibold text-gray-100 shadow-sm ring-1 ring-inset ring-gray-300 sm:mt-0 sm:w-auto">Upload Random</button>
+                                    <button onClick={() => setOpenModal(false)} type="button" className="mt-3 inline-flex justify-center rounded-md px-3 py-2 text-sm font-semibold text-gray-100 shadow-sm ring-1 ring-inset ring-gray-300 sm:mt-0 w-20">Cancel</button>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </div>}
             </>
         </>
 
