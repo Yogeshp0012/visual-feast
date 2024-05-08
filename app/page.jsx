@@ -10,7 +10,6 @@ export default function Home() {
     const [width, setWidth] = useState(32);
     const [height, setHeight] = useState(38);
     const [fit, setFit] = useState("Contain");
-    const [position, setPosition] = useState("Left");
     const [format, setFormat] = useState("WEBP");
 
 
@@ -106,22 +105,10 @@ export default function Home() {
                                 <select id="country" name="country" value={fit} onChange={(e) => setFit(e.target.value)}  autoComplete="country-name" className="block w-full rounded-md border-0 bg-white/5 py-1.5 p-2 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6 [&_*]:text-black">
                                     <option>Contain</option>
                                     <option>Cover</option>
-                                    <option>Fit</option>
                                 </select>
                             </div>
                         </li>
-                        <li className="p-2">
-                            <label htmlFor="country" className="block text-sm font-medium leading-6 text-white">Position</label>
-                            <div className="mt-2">
-                                <select id="country" name="country" value={position} onChange={(e) => setPosition(e.target.value)} autoComplete="country-name" className="block w-full rounded-md border-0 bg-white/5 py-1.5 p-2 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6 [&_*]:text-black">
-                                    <option>Center</option>
-                                    <option>Top</option>
-                                    <option>Left</option>
-                                    <option>Right</option>
-                                    <option>Bottom</option>
-                                </select>
-                            </div>
-                        </li>
+
                         <li className="p-2">
                             <label htmlFor="country" className="block text-sm font-medium leading-6 text-white">Format</label>
                             <div className="mt-2">
@@ -133,11 +120,6 @@ export default function Home() {
                                     <option>GIF</option>
                                     <option>BLURHASH</option>
                                 </select>
-                            </div>
-                        </li>
-                        <li className="p-2">
-                            <div className="mt-6 flex items-center justify-end gap-x-6 w-">
-                                <button type="submit" className="rounded-md bg-indigo-500 w-full px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">Save Preset</button>
                             </div>
                         </li>
                         <li className="p-2">
@@ -160,7 +142,7 @@ export default function Home() {
                             {/* <div className="ml-4 text-white">Add Image</div>
         <div className="rounded-md h-12 w-12 border-4 border-t-4 border-blue-500 animate-spin absolute" /> */}
                             <img
-                                srcSet= {`/.netlify/images?url=images/corgi.jpg&w=${width}&h=${height}&fit=${fit}&position=${position}&fm=${format}&q=${imageQuality}`}
+                                srcSet= {`/.netlify/images?url=images/corgi.jpg&w=${width}&h=${height}&fit=${fit.toLowerCase()}}&fm=${format.toLowerCase()}&q=${imageQuality}`}
                                 alt="Corgi"
                             />
                         </div>
