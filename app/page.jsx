@@ -151,8 +151,7 @@ export default function Home() {
                             {/* <div className="ml-4 text-white">Add Image</div>
         <div className="rounded-md h-12 w-12 border-4 border-t-4 border-blue-500 animate-spin absolute" /> */}
                             <img
-                                srcSet="/.netlify/images?url=images/corgi.jpg&w=640 640w, /.netlify/images?url=images/corgi.jpg&w=1280 1280w, /.netlify/images?url=images/corgi.jpg&w=2048 2048w"
-                                sizes="(max-width: 1024px) 100vw, 1024px"
+                                srcSet="/.netlify/images?url=images/corgi.jpg&w=50&h=50&fit=cover&position=top&fm=png&q=50"
                                 alt="Corgi"
                             />
                         </div>
