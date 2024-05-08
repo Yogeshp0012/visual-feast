@@ -5,9 +5,16 @@ import { useEffect, useState } from "react";
 export default function Home() {
     const addNewImage = (image) => {
         const url = image.split("?")[0];
-        setDisplayImages([{ image: `https://images.unsplash.com/${url}?w=420&h=300`, imageID: "1" }]);
+        const updatedImages = displayImages.map(img => {
+        if (img.imageID === imageCount) { // Specify the imageID you want to update here
+            return { ...img, image: `https://images.unsplash.com/${url}?w=420&h=300`, visible: true };
+        }
+        return img;
+        });
+        console.log(updatedImages)
+        setDisplayImages(updatedImages);
         setOpenModal(false);
-        console.log(displayImages);
+        setImageCount(imageCount+1);
     }
 
     const readFile = () => {
@@ -35,6 +42,7 @@ export default function Home() {
     const [imageUrl, setImageUrl] = useState("photo-1715128083452-065d5045bac1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwyfHx8ZW58MHx8fHx8")
     const [openModal, setOpenModal] = useState(false)
     const [displayImages, setDisplayImages] = useState([])
+    const [imageCount, setImageCount] = useState(1)
 
     useEffect(() => {
         const user = localStorage.getItem('username');
@@ -44,7 +52,14 @@ export default function Home() {
         else {
             fetch("https://randomuser.me/api/").then((res) => res.json()).then((data) => setUsername(data.results[0]["name"]["first"])).then(() => localStorage.setItem("username", username));
         }
-        setDisplayImages([]);
+        setDisplayImages([
+            { image: "", imageID: 1, visible: false },
+            { image: "", imageID: 2, visible: false },
+            { image: "", imageID: 3, visible: false },
+            { image: "", imageID: 4, visible: false },
+            { image: "", imageID: 5, visible: false },
+            { image: "", imageID: 6, visible: false },
+        ]);
     }, [username]);
 
     return (
@@ -158,31 +173,31 @@ export default function Home() {
                 <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14">
                     <div className="grid grid-cols-3 gap-4 mb-4">
                         {displayImages && displayImages.map((imageObj) => (
-                            <>                  <div className="flex flex-col items-center justify-center h-32 md:h-96 rounded bg-gray-50 dark:bg-gray-800">          <div className="flex flex-col justify-center items-center w-full h-full">
-                            <img
-                                srcSet={`/.netlify/images?url=${imageObj.image}`}
-                                alt="Corgi"
-                            />
-                        </div>
-                        <div className="flex flex-row justify-center items-center w-full h-24">
-                            <button type="button" className="inline-flex mr-10 w-4 lg:w-32 justify-center disabled:cursor-not-allowed items-center gap-x-1.5 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                                Edit
-                            </button>
-                            <button type="button" className="inline-flex w-4 lg:w-32 justify-center disabled:cursor-not-allowed items-center gap-x-1.5 rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600">
-                                Delete
-                            </button>
-                        </div> </div> </>
+                            <>  {imageObj.visible && <div key={imageObj.imageId} className="flex flex-col items-center justify-center h-32 md:h-96 rounded bg-gray-50 dark:bg-gray-800">          <div className="flex flex-col justify-center items-center w-full h-full">
+                                <img
+                                    srcSet={`/.netlify/images?url=${imageObj.image}`}
+                                    alt="Image"
+                                />
+                            </div>
+                                <div className="flex flex-row justify-center items-center w-full h-24">
+                                    <button type="button" className="inline-flex mr-10 w-4 lg:w-32 justify-center disabled:cursor-not-allowed items-center gap-x-1.5 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                        Edit
+                                    </button>
+                                    <button type="button" className="inline-flex w-4 lg:w-32 justify-center disabled:cursor-not-allowed items-center gap-x-1.5 rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600">
+                                        Delete
+                                    </button>
+                                </div> </div>} </>
                         ))}
 
 
-                    {(displayImages.length == 0) && <><div className="flex flex-col items-center justify-center h-32 md:h-96 rounded bg-gray-50 dark:bg-gray-800">
-                        {!openModal && <button onClick={() => setOpenModal(true)} type="button" className="w-48 rounded-md bg-indigo-600 p-2 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                            <div className="text-white">Add Image</div>
-                        </button>}
-                        {openModal && <div className="rounded-md h-12 w-12 border-4 border-t-4 border-blue-500 animate-spin absolute" />}
-                    </div></>
-                        //   srcSet= {`/.netlify/images?url=images/corgi.jpg&w=${width}&h=${height}&fit=${fit.toLowerCase()}&fm=${format.toLowerCase()}&q=${imageQuality}`}
-                    }
+                        {(imageCount < 7) && <><div className="flex flex-col items-center justify-center h-32 md:h-96 rounded bg-gray-50 dark:bg-gray-800">
+                            {!openModal && <button onClick={() => setOpenModal(true)} type="button" className="w-48 rounded-md bg-indigo-600 p-2 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                <div className="text-white">Add Image</div>
+                            </button>}
+                            {openModal && <div className="rounded-md h-12 w-12 border-4 border-t-4 border-blue-500 animate-spin absolute" />}
+                        </div></>
+                            //   srcSet= {`/.netlify/images?url=images/corgi.jpg&w=${width}&h=${height}&fit=${fit.toLowerCase()}&fm=${format.toLowerCase()}&q=${imageQuality}`}
+                        }
                     </div>
                 </div>
             </div>
