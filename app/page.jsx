@@ -1,5 +1,20 @@
 "use client"
+
+import { useEffect, useState } from "react";
+
 export default function Home() {
+    const [username, setUsername] = useState("");
+
+    useEffect(() => {
+        const user = localStorage.getItem('username');
+        if (user) {
+            setUsername(user);
+        }
+        else {
+            fetch("https://randomuser.me/api/").then((res) => res.json()).then((data) => setUsername(data.results[0]["name"]["first"])).then(() => localStorage.setItem("username", username));
+        }
+    }, [username]);
+
     return (
         <>
             <nav className="fixed top-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
@@ -20,11 +35,18 @@ export default function Home() {
                         <div className="flex items-center">
                             <div className="flex items-center ms-3">
                                 <div>
-                                    <button  type="button"  className="inline-flex disabled:cursor-not-allowed items-center gap-x-1.5 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                    <button type="button" className="inline-flex disabled:cursor-not-allowed items-center gap-x-1.5 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                                         Download as zip
                                     </button>
                                 </div>
                             </div>
+                            {username && <div className="flex items-center ms-3">
+                                <div>
+                                    <button type="button" className="inline-flex disabled:cursor-not-allowed items-center gap-x-1.5 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                        {username}
+                                    </button>
+                                </div>
+                            </div>}
                         </div>
                     </div>
                 </div>
@@ -117,6 +139,27 @@ export default function Home() {
                     </ul>
                 </div>
             </aside>
+            <div className="p-4 sm:ml-64">
+                <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14">
+                    <div className="grid grid-cols-3 gap-4 mb-4">
+                        <div className="flex items-center justify-center h-32 md:h-96 rounded bg-gray-50 dark:bg-gray-800">
+                            {/* <button type="button" className="rounded-full bg-indigo-600 p-2 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                    <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
+                                </svg>
+                            </button> */}
+                            {/* <div className="ml-4 text-white">Add Image</div>
+        <div className="rounded-md h-12 w-12 border-4 border-t-4 border-blue-500 animate-spin absolute" /> */}
+                            <img
+                                srcSet="/.netlify/images?url=images/corgi.jpg&w=640 640w, /.netlify/images?url=images/corgi.jpg&w=1280 1280w, /.netlify/images?url=images/corgi.jpg&w=2048 2048w"
+                                sizes="(max-width: 1024px) 100vw, 1024px"
+                                alt="Corgi"
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </>
     );
 }
