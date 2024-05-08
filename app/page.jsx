@@ -4,6 +4,15 @@ import { useEffect, useState } from "react";
 
 export default function Home() {
     const [username, setUsername] = useState("");
+    const [albumName, setAlbumName] = useState("Example");
+    const [preset, setPreset] = useState(2);
+    const [imageQuality, setImageQuality] = useState(49);;
+    const [width, setWidth] = useState(32);
+    const [height, setHeight] = useState(38);
+    const [fit, setFit] = useState("Contain");
+    const [position, setPosition] = useState("Left");
+    const [format, setFormat] = useState("WEBP");
+
 
     useEffect(() => {
         const user = localStorage.getItem('username');
@@ -57,13 +66,13 @@ export default function Home() {
                         <li className="p-2">
                             <label htmlFor="first-name" className="block text-sm font-medium leading-6 text-white">Album Name</label>
                             <div className="mt-2">
-                                <input type="text" name="first-name" id="first-name" autoComplete="given-name" className="block p-2 w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6 outline-none" />
+                                <input value={albumName} onChange={(e) => setAlbumName(e.target.value)} type="text" name="first-name" id="first-name" autoComplete="given-name" className="block p-2 w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6 outline-none" />
                             </div>
                         </li>
                         <li className="p-2">
                             <label htmlFor="country" className="block text-sm font-medium leading-6 text-white">Select Preset</label>
                             <div className="mt-2">
-                                <select id="country" name="country" autoComplete="country-name" className="block w-full rounded-md border-0 bg-white/5 py-1.5 p-2 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6 [&_*]:text-black">
+                                <select id="country" value={preset} onChange={(e) => setPreset(e.target.value)} name="country" autoComplete="country-name" className="block w-full rounded-md border-0 bg-white/5 py-1.5 p-2 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6 [&_*]:text-black">
                                     <option>1</option>
                                     <option>2</option>
                                     <option>3</option>
@@ -76,25 +85,25 @@ export default function Home() {
                         <li className="p-2">
                             <label htmlFor="first-name" className="block text-sm font-medium leading-6 text-white">Images Quality</label>
                             <div className="mt-2">
-                                <input type="number" name="first-name" id="first-name" autoComplete="given-name" className="block p-2 w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6 outline-none" />
+                                <input value={imageQuality} onChange={(e) => setImageQuality(e.target.value)} type="number" name="first-name" id="first-name" autoComplete="given-name" className="block p-2 w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6 outline-none" />
                             </div>
                         </li>
                         <li className="p-2">
                             <label htmlFor="first-name" className="block text-sm font-medium leading-6 text-white">Width</label>
                             <div className="mt-2">
-                                <input type="number" name="first-name" id="first-name" autoComplete="given-name" className="block p-2 w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6 outline-none" />
+                                <input type="number" value={width} onChange={(e) => setWidth(e.target.value)} name="first-name" id="first-name" autoComplete="given-name" className="block p-2 w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6 outline-none" />
                             </div>
                         </li>
                         <li className="p-2">
                             <label htmlFor="first-name" className="block text-sm font-medium leading-6 text-white">Height</label>
                             <div className="mt-2">
-                                <input type="number" name="first-name" id="first-name" autoComplete="given-name" className="block p-2 w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6 outline-none" />
+                                <input type="number" value={height} onChange={(e) => setHeight(e.target.value)} name="first-name" id="first-name" autoComplete="given-name" className="block p-2 w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6 outline-none" />
                             </div>
                         </li>
                         <li className="p-2">
                             <label htmlFor="country" className="block text-sm font-medium leading-6 text-white">Fit Image</label>
                             <div className="mt-2">
-                                <select id="country" name="country" autoComplete="country-name" className="block w-full rounded-md border-0 bg-white/5 py-1.5 p-2 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6 [&_*]:text-black">
+                                <select id="country" name="country" value={fit} onChange={(e) => setFit(e.target.value)}  autoComplete="country-name" className="block w-full rounded-md border-0 bg-white/5 py-1.5 p-2 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6 [&_*]:text-black">
                                     <option>Contain</option>
                                     <option>Cover</option>
                                     <option>Fit</option>
@@ -104,7 +113,7 @@ export default function Home() {
                         <li className="p-2">
                             <label htmlFor="country" className="block text-sm font-medium leading-6 text-white">Position</label>
                             <div className="mt-2">
-                                <select id="country" name="country" autoComplete="country-name" className="block w-full rounded-md border-0 bg-white/5 py-1.5 p-2 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6 [&_*]:text-black">
+                                <select id="country" name="country" value={position} onChange={(e) => setPosition(e.target.value)} autoComplete="country-name" className="block w-full rounded-md border-0 bg-white/5 py-1.5 p-2 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6 [&_*]:text-black">
                                     <option>Center</option>
                                     <option>Top</option>
                                     <option>Left</option>
@@ -116,7 +125,7 @@ export default function Home() {
                         <li className="p-2">
                             <label htmlFor="country" className="block text-sm font-medium leading-6 text-white">Format</label>
                             <div className="mt-2">
-                                <select id="country" name="country" autoComplete="country-name" className="block w-full rounded-md border-0 bg-white/5 py-1.5 p-2 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6 [&_*]:text-black">
+                                <select id="country" value={format} onChange={(e) => setFormat(e.target.value)}  name="country" autoComplete="country-name" className="block w-full rounded-md border-0 bg-white/5 py-1.5 p-2 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6 [&_*]:text-black">
                                     <option>AVIF</option>
                                     <option>JPG</option>
                                     <option>PNG</option>
@@ -151,7 +160,7 @@ export default function Home() {
                             {/* <div className="ml-4 text-white">Add Image</div>
         <div className="rounded-md h-12 w-12 border-4 border-t-4 border-blue-500 animate-spin absolute" /> */}
                             <img
-                                srcSet="/.netlify/images?url=images/corgi.jpg&w=50&h=50&fit=cover&position=top&fm=png&q=50"
+                                srcSet= {`/.netlify/images?url=images/corgi.jpg&w=${width}&h=${height}&fit=${fit}&position=${position}&fm=${format}&q=${imageQuality}`}
                                 alt="Corgi"
                             />
                         </div>
