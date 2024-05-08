@@ -209,7 +209,7 @@ export default function Home() {
                                                     URL</label>
                                                 <div className="flex mt-2 rounded-md bg-white/5 ring-1 ring-inset ring-white/10 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-500">
                                                     <span className="flex select-none items-center pl-3 text-gray-500 sm:text-sm">images.unsplash.com/</span>
-                                                    <input value={imageUrl} onChange={(e) => setImageUrl("https://images.unsplash.com/" + e.target.value)} type="text" name="image-url" id="image-url" autoComplete="image-url" className="flex-1 outline-none border-0 bg-transparent py-1.5 pl-1 text-white focus:ring-0 sm:text-sm sm:leading-6" />
+                                                    <input value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} type="text" name="image-url" id="image-url" autoComplete="image-url" className="flex-1 outline-none border-0 bg-transparent py-1.5 pl-1 text-white focus:ring-0 sm:text-sm sm:leading-6" />
                                                 </div>
 
                                             </div>
