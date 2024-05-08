@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 
 export default function Home() {
     const addNewImage = (image) => {
-        setDisplayImages([{ image: `https://images.unsplash.com/${image}`, imageID: "1" }]);
+        const url = image.split("?")[0];
+        setDisplayImages([{ image: `https://images.unsplash.com/${image}?w=420&h=300`, imageID: "1" }]);
         setOpenModal(false);
         console.log(displayImages);
     }
@@ -237,7 +238,7 @@ export default function Home() {
                                     </div>
                                 </div>
                                 <div className="bg-gray-800 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                                    <button onClick={() => addNewImage("photo-1715128083452-065d5045bac1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwyfHx8ZW58MHx8fHx8")} type="button" className="ml-3 inline-flex disabled:cursor-not-allowed items-center gap-x-1.5 justify-center  rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 w-20">
+                                    <button onClick={() => addNewImage(imageUrl)} type="button" className="ml-3 inline-flex disabled:cursor-not-allowed items-center gap-x-1.5 justify-center  rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 w-20">
                                         Add
                                     </button>
                                     <button onClick={() => setOpenModal(false)} type="button" className="mt-3 inline-flex justify-center rounded-md px-3 py-2 text-sm font-semibold text-gray-100 shadow-sm ring-1 ring-inset ring-gray-300 sm:mt-0 w-20">Cancel</button>
