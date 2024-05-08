@@ -142,9 +142,10 @@ export default function Home() {
                             {/* <div className="ml-4 text-white">Add Image</div>
         <div className="rounded-md h-12 w-12 border-4 border-t-4 border-blue-500 animate-spin absolute" /> */}
                             <img
-                                srcSet= {`/.netlify/images?url=images/corgi.jpg&w=${width}&h=${height}&fit=${fit.toLowerCase()}&fm=${format.toLowerCase()}&q=${imageQuality}`}
+                                srcSet= {`/.netlify/images?url=images/corgi.jpg&w=300&h=300`}
                                 alt="Corgi"
                             />
+                                                          {/* srcSet= {`/.netlify/images?url=images/corgi.jpg&w=${width}&h=${height}&fit=${fit.toLowerCase()}&fm=${format.toLowerCase()}&q=${imageQuality}`}   */}
                         </div>
                     </div>
                 </div>
