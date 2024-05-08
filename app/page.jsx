@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 export default function Home() {
     const addNewImage = (image) => {
         const url = image.split("?")[0];
-        setDisplayImages([{ image: `https://images.unsplash.com/${image}?w=420&h=300`, imageID: "1" }]);
+        setDisplayImages([{ image: `https://images.unsplash.com/${url}?w=420&h=300`, imageID: "1" }]);
         setOpenModal(false);
         console.log(displayImages);
     }
