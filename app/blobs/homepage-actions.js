@@ -20,6 +20,6 @@ export async function uploadImageData({ parameters }) {
 // }
 
 export async function listImageData({ keyName }) {
-    const data = await store().get(keyName, { type: 'json' });
+    const data = await store().getWithMetadata(keyName, { type: 'json' });
     return data;
 }
