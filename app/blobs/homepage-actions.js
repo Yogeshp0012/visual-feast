@@ -8,7 +8,7 @@ function store() {
 export async function uploadImageData({ parameters }) {
     console.log(parameters);
     const key = parameters.username;
-    await store().setJSON(key, parameters);
+    await store().setJSON(key, parameters.images);
 }
 
 // export async function listImagesData() {
