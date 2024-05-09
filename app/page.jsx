@@ -67,7 +67,7 @@ export default function Home() {
        setImagesLength(displayImages.length);
        setOpenModal(false);
        listImageData({keyName: localStorage.getItem(username)}).then((data) => {
-        console.log(data);
+        console.log(data.json());
        });
     }, [username, displayImages]);
 
