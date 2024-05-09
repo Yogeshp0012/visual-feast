@@ -40,7 +40,6 @@ export default function Home() {
             return;
         }
         setFileName(file.name);
-        console.log(file);
     }
 
 
@@ -63,18 +62,28 @@ export default function Home() {
         const user = localStorage.getItem('username');
         if (user) {
             setUsername(user);
-        }
-        else {
-            fetch("https://randomuser.me/api/").then((res) => res.json()).then((data) => setUsername(data.results[0]["name"]["first"])).then(() => localStorage.setItem("username", username));
+        } else {
+            fetch("https://randomuser.me/api/")
+                .then((res) => res.json())
+                .then((data) => {
+                    const randomUsername = data.results[0]["name"]["first"];
+                    setUsername(randomUsername);
+                    localStorage.setItem("username", randomUsername);
+                });
         }
     }, []);
 
     useEffect(() => {
-        listImageData({ username }).then((data) => setDisplayImages(data));
+        listImageData({ username }).then((data) =>{
+            if(data && data.images)
+            { setDisplayImages(data.images)} 
+            else{setDisplayImages([])}});
     }, [username]);
 
     useEffect(() => {
+        if(displayImages !== undefined){
         setImagesLength(displayImages.length);
+        }
     }, [displayImages]);
 
     return (

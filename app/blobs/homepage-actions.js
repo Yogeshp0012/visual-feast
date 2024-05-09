@@ -17,5 +17,5 @@ export async function uploadImageData({ username, images }) {
 
 export async function listImageData({ username }) {
     const data = await store().get(username ,{type: 'json'});
-    return data["images"];
+    return data;
 }
