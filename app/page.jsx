@@ -21,7 +21,7 @@ export default function Home() {
         setDisplayImages((prevImages) => [...prevImages, newImage]);;
         await uploadImageData({parameters: {
             username: localStorage.getItem("username"),
-            images:  displayImages
+            images:  JSON.stringify(displayImages)
         }});
     }
 
