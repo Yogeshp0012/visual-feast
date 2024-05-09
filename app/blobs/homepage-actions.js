@@ -21,6 +21,5 @@ export async function uploadImageData({ parameters }) {
 
 export async function listImageData({ keyName }) {
     const data = await store().getWithMetadata(keyName, { type: 'json' });
-    console.log(data.then((res) => console.log(res)));
     return data;
 }
