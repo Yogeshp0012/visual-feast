@@ -197,7 +197,7 @@ export default function Home() {
                 <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14">
                     <div className="grid lg:grid-cols-2 xl:grid-cols-3 gap-4 mb-4">
                         {displayImages && displayImages.map((imageObj) => (
-                            <div key={`${imageObj.imageID}-${imageObj.image}`} className="flex flex-col items-center justify-center h-32 md:h-96 rounded bg-gray-50 dark:bg-gray-800">          <div className="flex flex-col justify-center items-center w-full h-full">
+                            <div key={`${imageObj.imageID}-${imageObj.image}`} className="flex flex-col items-center justify-center h-96 rounded bg-gray-50 dark:bg-gray-800">          <div className="flex flex-col justify-center items-center w-full h-full">
                                 <img
                                     srcSet={`/.netlify/images?url=${imageObj.image}`}
                                     alt="Image"
@@ -214,7 +214,7 @@ export default function Home() {
                         ))}
 
 
-                        {(imagesLength < 6) && <><div className="flex flex-col items-center justify-center h-32 md:h-96 rounded bg-gray-50 dark:bg-gray-800">
+                        {(imagesLength < 6) && <><div className="flex flex-col items-center justify-center h-96 rounded bg-gray-50 dark:bg-gray-800">
                             {!openModal && <button onClick={() => setOpenModal(true)} type="button" className="w-48 rounded-md bg-indigo-600 p-2 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                                 <div className="text-white">Add Image</div>
                             </button>}
