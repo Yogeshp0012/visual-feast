@@ -18,11 +18,14 @@ export default function Home() {
     const addNewImage = async (image) => {
         const url = image.split("?")[0];
         const newImage = { imageID: generateRandomKey(), image: `https://images.unsplash.com/${url}?w=420&h=300`, visible: true };
-        setDisplayImages((prevImages) => [...prevImages, newImage]);;
-        await uploadImageData({parameters: {
-            username: localStorage.getItem("username"),
-            images:  JSON.stringify(displayImages)
-        }});
+        setDisplayImages((prevImages) => [...prevImages, newImage]);
+    const allImages = [...displayImages, newImage];
+
+    uploadImageData({
+        username: username,
+        images: allImages
+    });
+        setOpenModal(false);
     }
 
     const deleteImage = (imageId) => {
@@ -55,7 +58,7 @@ export default function Home() {
     const [openModal, setOpenModal] = useState(false)
     const [displayImages, setDisplayImages] = useState([])
     const [imagesLength, setImagesLength] = useState(0)
-
+    
     useEffect(() => {
         const user = localStorage.getItem('username');
         if (user) {
@@ -64,12 +67,15 @@ export default function Home() {
         else {
             fetch("https://randomuser.me/api/").then((res) => res.json()).then((data) => setUsername(data.results[0]["name"]["first"])).then(() => localStorage.setItem("username", username));
         }
-       setImagesLength(displayImages.length);
-       setOpenModal(false);
-       listImageData({keyName: localStorage.getItem(username)}).then((data) => {
-        console.log(data.type);
-       });
-    }, [username, displayImages]);
+    }, []);
+
+    useEffect(() => {
+        listImageData({ username }).then((data) => setDisplayImages(data));
+    }, [username]);
+
+    useEffect(() => {
+        setImagesLength(displayImages.length);
+    }, [displayImages]);
 
     return (
         <>
@@ -182,7 +188,7 @@ export default function Home() {
                 <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14">
                     <div className="grid grid-cols-3 gap-4 mb-4">
                         {displayImages && displayImages.map((imageObj) => (
-                            <>  {imageObj.visible && <div key={imageObj.imageId} className="flex flex-col items-center justify-center h-32 md:h-96 rounded bg-gray-50 dark:bg-gray-800">          <div className="flex flex-col justify-center items-center w-full h-full">
+                            <div key={`${imageObj.imageID}-${imageObj.image}`} className="flex flex-col items-center justify-center h-32 md:h-96 rounded bg-gray-50 dark:bg-gray-800">          <div className="flex flex-col justify-center items-center w-full h-full">
                                 <img
                                     srcSet={`/.netlify/images?url=${imageObj.image}`}
                                     alt="Image"
@@ -195,7 +201,7 @@ export default function Home() {
                                     <button onClick={() => deleteImage(imageObj.imageID)} type="button" className="inline-flex w-4 lg:w-32 justify-center disabled:cursor-not-allowed items-center gap-x-1.5 rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600">
                                         Delete
                                     </button>
-                                </div> </div>} </>
+                                </div> </div>
                         ))}
 
 

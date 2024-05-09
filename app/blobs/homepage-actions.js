@@ -5,10 +5,8 @@ function store() {
     return getStore({ name: 'homepage-images', consistency: 'strong', siteID: '7d5abf11-dfe0-483b-a12d-77271355226f', token: 'nfp_T9uxQ2Vde2nsFrxRjrAmnGXqYdDUCt6m40dd' });
 }
 
-export async function uploadImageData({ parameters }) {
-    console.log(parameters);
-    const key = parameters.username;
-    await store().setJSON("nails", { type: "common", finish: "bright" });
+export async function uploadImageData({ username, images }) {
+    await store().setJSON(username, { images: [...images] });
 }
 
 // export async function listImagesData() {
@@ -17,7 +15,7 @@ export async function uploadImageData({ parameters }) {
 //     return keys;
 // }
 
-export async function listImageData({ keyName }) {
-    const data = await store().get("nails");
-    return new Response(data);
+export async function listImageData({ username }) {
+    const data = await store().get(username ,{type: 'json'});
+    return data["images"];
 }
