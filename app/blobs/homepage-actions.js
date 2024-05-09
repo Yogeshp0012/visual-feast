@@ -2,22 +2,22 @@
 import { getStore } from '@netlify/blobs';
 
 function store() {
-    return getStore({ name: 'homepage-images', consistency: 'strong' });
+    return getStore({ name: 'homepage-images', consistency: 'strong', siteID: '7d5abf11-dfe0-483b-a12d-77271355226f', token: 'nfp_T9uxQ2Vde2nsFrxRjrAmnGXqYdDUCt6m40dd' });
 }
 
 export async function uploadImageData({ parameters }) {
-    const key = parameters.imageID;
+    console.log(parameters);
+    const key = parameters.username;
     await store().setJSON(key, parameters);
-    console.log('Stored shape with parameters:', parameters, 'to key:', key);
 }
 
-export async function listShapesAction() {
-    const data = await store().list();
-    const keys = data.blobs.map(({ key }) => key);
-    return keys;
-}
+// export async function listImagesData() {
+//     const data = await store().list();
+//     const keys = data.blobs.map(({ key }) => key);
+//     return keys;
+// }
 
-export async function getShapeAction({ keyName }) {
+export async function listImageData({ keyName }) {
     const data = await store().get(keyName, { type: 'json' });
     return data;
 }

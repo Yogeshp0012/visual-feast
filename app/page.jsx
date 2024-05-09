@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react";
+import { listImageData, uploadImageData } from "./blobs/homepage-actions";
 
 export default function Home() {
 
@@ -16,15 +17,18 @@ export default function Home() {
 
     const addNewImage = (image) => {
         const url = image.split("?")[0];
-        setDisplayImages([...displayImages, { imageID: generateRandomKey(), image: `https://images.unsplash.com/${url}?w=420&h=300`, visible: true }]);
-        setOpenModal(false);
-        setImageCount(imageCount+1);
+        const newImage = { imageID: generateRandomKey(), image: `https://images.unsplash.com/${url}?w=420&h=300`, visible: true };
+        setDisplayImages((prevImages) => [...prevImages, newImage]);;
+        const parameters = {
+            username: localStorage.getItem("username"),
+            images:  displayImages
+        }
+        uploadImageData(parameters);
     }
 
     const deleteImage = (imageId) => {
-        setDisplayImages(displayImages.filter((e) => e.id !== imageId));
-        setImageCount(imageCount-1);
-    }
+        setDisplayImages((prevImages) => prevImages.filter((image) => image.imageID !== imageId));
+      };
 
     const readFile = () => {
         const fileInput = document.getElementById('file-upload');
@@ -51,7 +55,7 @@ export default function Home() {
     const [imageUrl, setImageUrl] = useState("photo-1715128083452-065d5045bac1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwyfHx8ZW58MHx8fHx8")
     const [openModal, setOpenModal] = useState(false)
     const [displayImages, setDisplayImages] = useState([])
-    const [imageCount, setImageCount] = useState(1)
+    const [imagesLength, setImagesLength] = useState(0)
 
     useEffect(() => {
         const user = localStorage.getItem('username');
@@ -61,15 +65,12 @@ export default function Home() {
         else {
             fetch("https://randomuser.me/api/").then((res) => res.json()).then((data) => setUsername(data.results[0]["name"]["first"])).then(() => localStorage.setItem("username", username));
         }
-        setDisplayImages([
-            { image: "", imageID: generateRandomKey(), visible: false },
-            { image: "", imageID: generateRandomKey(), visible: false },
-            { image: "", imageID: generateRandomKey(), visible: false },
-            { image: "", imageID: generateRandomKey(), visible: false },
-            { image: "", imageID: generateRandomKey(), visible: false },
-            { image: "", imageID: generateRandomKey(), visible: false },
-        ]);
-    }, [username]);
+       setImagesLength(displayImages.length);
+       setOpenModal(false);
+       listImageData({keyName: localStorage.getItem(username)}).then((data) => {
+        console.log(data);
+       });
+    }, [username, displayImages]);
 
     return (
         <>
@@ -199,7 +200,7 @@ export default function Home() {
                         ))}
 
 
-                        {(imageCount < 7) && <><div className="flex flex-col items-center justify-center h-32 md:h-96 rounded bg-gray-50 dark:bg-gray-800">
+                        {(imagesLength < 6) && <><div className="flex flex-col items-center justify-center h-32 md:h-96 rounded bg-gray-50 dark:bg-gray-800">
                             {!openModal && <button onClick={() => setOpenModal(true)} type="button" className="w-48 rounded-md bg-indigo-600 p-2 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                                 <div className="text-white">Add Image</div>
                             </button>}
