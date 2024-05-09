@@ -57,7 +57,7 @@ export default function Home() {
     const [openModal, setOpenModal] = useState(false)
     const [displayImages, setDisplayImages] = useState([])
     const [imagesLength, setImagesLength] = useState(0)
-    
+
     useEffect(() => {
         const user = localStorage.getItem('username');
         if (user) {
@@ -76,7 +76,7 @@ export default function Home() {
     useEffect(() => {
         listImageData({ username }).then((data) =>{
             if(data && data.images)
-            { setDisplayImages(data.images)} 
+            { setDisplayImages(data.images)}
             else{setDisplayImages([])}});
     }, [username]);
 
@@ -195,7 +195,7 @@ export default function Home() {
             </aside>
             <div className="p-4 sm:ml-64">
                 <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14">
-                    <div className="grid grid-cols-3 gap-4 mb-4">
+                    <div className="grid lg:grid-cols-2 xl:grid-cols-3 gap-4 mb-4">
                         {displayImages && displayImages.map((imageObj) => (
                             <div key={`${imageObj.imageID}-${imageObj.image}`} className="flex flex-col items-center justify-center h-32 md:h-96 rounded bg-gray-50 dark:bg-gray-800">          <div className="flex flex-col justify-center items-center w-full h-full">
                                 <img
@@ -204,10 +204,10 @@ export default function Home() {
                                 />
                             </div>
                                 <div className="flex flex-row justify-center items-center w-full h-24">
-                                    <button type="button" className="inline-flex mr-10 w-4 lg:w-32 justify-center disabled:cursor-not-allowed items-center gap-x-1.5 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                    <button type="button" className="inline-flex mr-10 w-32 justify-center disabled:cursor-not-allowed items-center gap-x-1.5 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                                         Edit
                                     </button>
-                                    <button onClick={() => deleteImage(imageObj.imageID)} type="button" className="inline-flex w-4 lg:w-32 justify-center disabled:cursor-not-allowed items-center gap-x-1.5 rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600">
+                                    <button onClick={() => deleteImage(imageObj.imageID)} type="button" className="inline-flex w-32 justify-center disabled:cursor-not-allowed items-center gap-x-1.5 rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600">
                                         Delete
                                     </button>
                                 </div> </div>
