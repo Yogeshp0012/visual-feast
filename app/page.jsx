@@ -15,15 +15,14 @@ export default function Home() {
         return result;
       }
 
-    const addNewImage = (image) => {
+    const addNewImage = async (image) => {
         const url = image.split("?")[0];
         const newImage = { imageID: generateRandomKey(), image: `https://images.unsplash.com/${url}?w=420&h=300`, visible: true };
         setDisplayImages((prevImages) => [...prevImages, newImage]);;
-        const parameters = {
+        await uploadImageData({parameters: {
             username: localStorage.getItem("username"),
             images:  displayImages
-        }
-        uploadImageData(parameters);
+        }});
     }
 
     const deleteImage = (imageId) => {
