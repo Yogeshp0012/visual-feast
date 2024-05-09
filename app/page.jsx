@@ -3,18 +3,27 @@
 import { useEffect, useState } from "react";
 
 export default function Home() {
+
+    const generateRandomKey =(length = 10) => {
+        let result = '';
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        const charactersLength = characters.length;
+        for (let i = 0; i < length; i++) {
+          result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+        return result;
+      }
+
     const addNewImage = (image) => {
         const url = image.split("?")[0];
-        const updatedImages = displayImages.map(img => {
-        if (img.imageID === imageCount) { // Specify the imageID you want to update here
-            return { ...img, image: `https://images.unsplash.com/${url}?w=420&h=300`, visible: true };
-        }
-        return img;
-        });
-        console.log(updatedImages)
-        setDisplayImages(updatedImages);
+        setDisplayImages([...displayImages, { imageID: generateRandomKey(), image: `https://images.unsplash.com/${url}?w=420&h=300`, visible: true }]);
         setOpenModal(false);
         setImageCount(imageCount+1);
+    }
+
+    const deleteImage = (imageId) => {
+        setDisplayImages(displayImages.filter((e) => e.id !== imageId));
+        setImageCount(imageCount-1);
     }
 
     const readFile = () => {
@@ -53,12 +62,12 @@ export default function Home() {
             fetch("https://randomuser.me/api/").then((res) => res.json()).then((data) => setUsername(data.results[0]["name"]["first"])).then(() => localStorage.setItem("username", username));
         }
         setDisplayImages([
-            { image: "", imageID: 1, visible: false },
-            { image: "", imageID: 2, visible: false },
-            { image: "", imageID: 3, visible: false },
-            { image: "", imageID: 4, visible: false },
-            { image: "", imageID: 5, visible: false },
-            { image: "", imageID: 6, visible: false },
+            { image: "", imageID: generateRandomKey(), visible: false },
+            { image: "", imageID: generateRandomKey(), visible: false },
+            { image: "", imageID: generateRandomKey(), visible: false },
+            { image: "", imageID: generateRandomKey(), visible: false },
+            { image: "", imageID: generateRandomKey(), visible: false },
+            { image: "", imageID: generateRandomKey(), visible: false },
         ]);
     }, [username]);
 
@@ -183,7 +192,7 @@ export default function Home() {
                                     <button type="button" className="inline-flex mr-10 w-4 lg:w-32 justify-center disabled:cursor-not-allowed items-center gap-x-1.5 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                                         Edit
                                     </button>
-                                    <button type="button" className="inline-flex w-4 lg:w-32 justify-center disabled:cursor-not-allowed items-center gap-x-1.5 rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600">
+                                    <button onClick={() => deleteImage(imageObj.imageID)} type="button" className="inline-flex w-4 lg:w-32 justify-center disabled:cursor-not-allowed items-center gap-x-1.5 rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600">
                                         Delete
                                     </button>
                                 </div> </div>} </>

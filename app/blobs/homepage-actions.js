@@ -2,19 +2,16 @@
 import { getStore } from '@netlify/blobs';
 
 function store() {
-    return getStore({ name: 'images', consistency: 'strong' });
+    return getStore({ name: 'homepage-images', consistency: 'strong' });
 }
 
-// Always be sanitizing data in real sites!
-export async function uploadShapeAction({ parameters }) {
-    if (uploadDisabled) throw new Error('Sorry, uploads are disabled');
-
-    const key = parameters.name;
+export async function uploadImageData({ parameters }) {
+    const key = parameters.imageID;
     await store().setJSON(key, parameters);
     console.log('Stored shape with parameters:', parameters, 'to key:', key);
 }
 
-export async function listImages() {
+export async function listShapesAction() {
     const data = await store().list();
     const keys = data.blobs.map(({ key }) => key);
     return keys;
