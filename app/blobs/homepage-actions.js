@@ -8,7 +8,9 @@ function store() {
 export async function uploadImageData({ parameters }) {
     console.log(parameters);
     const key = parameters.username;
-    await store().setJSON(key, { imageID: "test", visible: "tres" });
+    await store().set(key, "For formal events", {
+        metadata: { material: "acrylic", sale: true },
+      });
 }
 
 // export async function listImagesData() {
@@ -18,6 +20,6 @@ export async function uploadImageData({ parameters }) {
 // }
 
 export async function listImageData({ keyName }) {
-    const data = await store().getWithMetadata(keyName, { type: 'json' });
+    const data = await store().get(keyName, { type: 'json' });
     return data;
 }
