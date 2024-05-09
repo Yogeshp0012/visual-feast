@@ -55,7 +55,6 @@ export default function Home() {
     const [openModal, setOpenModal] = useState(false)
     const [displayImages, setDisplayImages] = useState([])
     const [imagesLength, setImagesLength] = useState(0)
-    const [testData, setTestData] = useState(null)
 
     useEffect(() => {
         const user = localStorage.getItem('username');
@@ -68,7 +67,7 @@ export default function Home() {
        setImagesLength(displayImages.length);
        setOpenModal(false);
        listImageData({keyName: localStorage.getItem(username)}).then((data) => {
-        setTestData(data);
+        console.log(data.metadata.material);
        });
     }, [username, displayImages]);
 
@@ -100,7 +99,7 @@ export default function Home() {
                             {username && <div className="flex items-center ms-3">
                                 <div>
                                     <button type="button" className="inline-flex disabled:cursor-not-allowed items-center gap-x-1.5 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                                        {username} {testData}
+                                        {username}
                                     </button>
                                 </div>
                             </div>}
