@@ -14,8 +14,26 @@ export default function Edit() {
     const [height, setHeight] = useState(38);
     const [fit, setFit] = useState("Contain");
     const [format, setFormat] = useState("WEBP");
+    const [filter, setFilter] = useState("Default");
     const [fileName, setFileName] = useState("")
     const [imageName, setImageName] = useState("Test")
+
+    const handleTest = (formatValue) => {
+        setFormat(formatValue)
+        let img = document.getElementById("edit-image")
+        let canvas = document.querySelector("canvas");
+        if (canvas && !img) {
+            var canvasElement = document.querySelector('canvas');
+            var imgElement = document.createElement('img');
+            imgElement.id = 'edit-image';
+            imgElement.alt = 'Edit Image';
+            imgElement.setAttribute("srcSet" ,`/.netlify/images?url=https://images.unsplash.com/${imageData.image.url}&w=${width}&h=${height}&fit=${fit.toLowerCase()}&fm=${format.toLowerCase()}&q=${imageQuality}`);
+            canvasElement.parentNode.replaceChild(imgElement, canvasElement);
+        }
+        if(formatValue !== "Default"){
+        pixelsJS.filterImg(img, formatValue);
+        }
+    }
 
     useEffect(() => {
         const user = localStorage.getItem('username');
@@ -89,9 +107,23 @@ export default function Edit() {
                             </div>
                         </li>
                         <li className="p-2">
-                            <label htmlFor="image-quality" className="block text-sm font-medium leading-6 text-white">Images Quality</label>
+                            <label htmlFor="image-quality" className="block text-sm font-medium leading-6 text-white">Image Quality</label>
                             <div className="mt-2">
                                 <input value={imageQuality} onChange={(e) => setImageQuality(e.target.value)} type="number" name="image-quality" id="image-quality" autoComplete="image-quality" className="block p-2 w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6 outline-none" />
+                            </div>
+                        </li>
+                        <li className="p-2">
+                            <label htmlFor="formate" className="block text-sm font-medium leading-6 text-white">Image Filter</label>
+                            <div className="mt-2">
+                                <select id="formate" value={format} onChange={(e) => handleTest(e.target.value)} name="formate" autoComplete="formate" className="block w-full rounded-md border-0 bg-white/5 py-1.5 p-2 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6 [&_*]:text-black">
+                                    <option value="Default">Default</option>
+                                    <option value="horizontal_lines">Lines</option>
+                                    <option value="eclectic">Eclectic</option>
+                                    <option value="pane">Pane</option>
+                                    <option value="sunset">Sunset</option>
+                                    <option value="invert">Invert</option>
+                                    <option value="greyscale">Grayscale</option>
+                                </select>
                             </div>
                         </li>
                         <li className="p-2">
@@ -140,16 +172,16 @@ export default function Edit() {
             {imageData && imageData.image && <div className="p-4 sm:ml-64">
                 <div className="border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14 h-[90vh]">
                     <div className="flex items-center justify-center h-[75vh]">
-                        <img alt="Edit Image" srcSet={`/.netlify/images?url=https://images.unsplash.com/${imageData.image.url}&w=${width}&h=${height}&fit=${fit.toLowerCase()}&fm=${format.toLowerCase()}&q=${quality}`} />
+                        <img id="edit-image" alt="Edit Image" srcSet={`/.netlify/images?url=https://images.unsplash.com/${imageData.image.url}&w=${width}&h=${height}&fit=${fit.toLowerCase()}&fm=${format.toLowerCase()}&q=${imageQuality}`} />
                     </div>
                     <div className="flex items-end justify-center">
                         <div className=" bg-gray-800 w-[80vh] h-16  rounded-lg  ">
                             asdad
                         </div>
+                        <button onClick={handleTest} className="btn btn-primary">Test</button>
                     </div>
                 </div>
             </div>}
-
         </>
     );
 
