@@ -130,7 +130,7 @@ export default function Edit() {
             {imageData && imageData.image && <div className="p-4 sm:ml-64">
                 <div className="border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14 h-[90vh]">
                     <div className="flex items-center justify-center h-[75vh]">
-                        <img alt="Edit Image" srcSet={`/.netlify/images?url=https://images.unsplash.com/${imageData.url}&w=${imageData.width}&h=${imageData.height}&fit=${imageData.fit.toLowerCase()}&fm=${imageData.format.toLowerCase()}&q=${imageData.quality}`} />
+                        <img alt="Edit Image" srcSet={`/.netlify/images?url=https://images.unsplash.com/${imageData.image.url}&w=${imageData.image.width}&h=${imageData.image.height}&fit=${imageData.image.fit.toLowerCase()}&fm=${imageData.image.format.toLowerCase()}&q=${imageData.image.quality}`} />
                     </div>
                     <div className="flex items-end justify-center">
                         <div className=" bg-gray-800 w-[80vh] h-16  rounded-lg  ">
