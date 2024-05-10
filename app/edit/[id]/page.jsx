@@ -26,6 +26,16 @@ export default function Edit() {
         listImage({ imageID: id }).then((data) => setImageData(data))
     }, [params])
 
+    useEffect(() => {
+        if (imageData && imageData.image) {
+            setImageQuality(imageData.image.quality)
+            setWidth(imageData.image.width)
+            setHeight(imageData.image.height)
+            setFit(imageData.image.fit)
+            setFormat(imageData.image.format)
+        }
+    }, [imageData])
+
     return (
         <>
             <nav className="fixed top-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
@@ -130,7 +140,7 @@ export default function Edit() {
             {imageData && imageData.image && <div className="p-4 sm:ml-64">
                 <div className="border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14 h-[90vh]">
                     <div className="flex items-center justify-center h-[75vh]">
-                        <img alt="Edit Image" srcSet={`/.netlify/images?url=https://images.unsplash.com/${imageData.image.url}&w=${imageData.image.width}&h=${imageData.image.height}&fit=${imageData.image.fit.toLowerCase()}&fm=${imageData.image.format.toLowerCase()}&q=${imageData.image.quality}`} />
+                        <img alt="Edit Image" srcSet={`/.netlify/images?url=https://images.unsplash.com/${imageData.image.url}&w=${width}&h=${height}&fit=${fit.toLowerCase()}&fm=${format.toLowerCase()}&q=${quality}`} />
                     </div>
                     <div className="flex items-end justify-center">
                         <div className=" bg-gray-800 w-[80vh] h-16  rounded-lg  ">
