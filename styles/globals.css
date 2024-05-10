@@ -3,7 +3,8 @@
 @import 'tailwindcss/utilities';
 @import url('https://fonts.googleapis.com/css2?family=Lilita+One&family=Varela+Round&display=swap');
 
-:root,html{
+:root,
+html {
     background-color: transparent;
 }
 
@@ -12,4 +13,18 @@
     font-family: "Lilita One", sans-serif;
     font-weight: 900;
     font-style: bold;
-  }
+}
+
+.rotated {
+    animation: rotation 2s linear infinite;
+}
+
+@keyframes rotation {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(90deg);
+    }
+}

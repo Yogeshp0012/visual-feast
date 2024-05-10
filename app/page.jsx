@@ -17,27 +17,41 @@ export default function Home() {
         return result;
     }
 
+    const applyAllImages = () => {
+        displayImages.map((data) => {
+            addImage({
+                imageID: data.imageID, imageMetadata: {
+                    width: width,
+                    height: height,
+                    quality: imageQuality,
+                    fit: fit.toLowerCase(),
+                    format: format.toLowerCase(),
+                    url: data.url
+                }
+            })
+        })
+    }
+
     const addNewImage = async (image) => {
-        if(file){
+        if (file) {
             await handleFileUpload();
         }
-        const url = image.split("?")[0];
-        // const newImage = { imageID: generateRandomKey(), image: `https://images.unsplash.com/${url}?w=420&h=300`, visible: true };
-        const newImage = { imageID: generateRandomKey(), image: `images/${username}/snapedit_1706947763885.png`, visible: true };
-        addImage({
-            imageID: newImage.imageID, imageMetadata: {
-                width: 360,
-                height: 360,
-                quality: 50,
-                fit: "contain",
-                format: "webp",
-                url: url
-            }
-        })
-        //   srcSet= {`/.netlify/images?url=images/corgi.jpg&w=${width}&h=${height}&fit=${fit.toLowerCase()}&fm=${format.toLowerCase()}&q=${imageQuality}`}
-
-        setDisplayImages((prevImages) => [...prevImages, newImage]);
-        setOpenModal(false);
+        else {
+            const url = image.split("?")[0];
+            const newImage = { imageID: generateRandomKey(), image: `https://images.unsplash.com/${url}&w=300&h=300`, url: url };
+            addImage({
+                imageID: newImage.imageID, imageMetadata: {
+                    width: 360,
+                    height: 360,
+                    quality: 50,
+                    fit: "contain",
+                    format: "webp",
+                    url: url
+                }
+            })
+            setDisplayImages((prevImages) => [...prevImages, newImage]);
+            setOpenModal(false);
+        }
     }
 
     const deleteImage = (imageId) => {
@@ -54,27 +68,41 @@ export default function Home() {
         }
         setFileName(file.name);
         setFile(file);
+    }
+
+    const handleFileUpload = async () => {
+        const fileExtension = file.name.split('.').pop();
         try {
-            console.log(file.buffer);
             const formData = new FormData();
             formData.append('file', file);
-            console.log(file);
+            formData.append('username', username);
+            formData.append('name', imageName);
+            formData.append('extension', fileExtension);
             const response = await fetch('/api/fileUpload', {
                 method: 'POST',
                 body: formData,
             });
             if (response.ok) {
-                console.log('File uploaded successfully');
+                const newImage = { imageID: generateRandomKey(), image: `/images/${username}/${imageName}.${fileExtension}&w=300&h=300`, url: "" };
+                addImage({
+                    imageID: newImage.imageID, imageMetadata: {
+                        width: 360,
+                        height: 360,
+                        quality: 50,
+                        fit: "contain",
+                        format: "webp",
+                        url: ""
+                    }
+                })
+
+                setDisplayImages((prevImages) => [...prevImages, newImage]);
+                setOpenModal(false);
             } else {
                 console.error('Error uploading file');
             }
         } catch (error) {
             console.error('An error occurred during file upload:', error);
         }
-    }
-
-    const handleFileUpload = async () => {
-
     };
 
 
@@ -222,7 +250,7 @@ export default function Home() {
                         </li>
                         <li className="p-2">
                             <div className="flex items-center justify-end gap-x-6 w-">
-                                <button type="submit" className="rounded-md bg-indigo-500 w-full px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">Apply</button>
+                                <button onClick={applyAllImages} type="submit" className="rounded-md bg-indigo-500 w-full px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">Apply</button>
                             </div>
                         </li>
                     </ul>

@@ -18,6 +18,12 @@ export default function Edit() {
     const [fileName, setFileName] = useState("")
     const [imageName, setImageName] = useState("Test")
 
+    const [rotationDegree, setRotationDegree] = useState(0);
+
+    const handleClick = () => {
+      setRotationDegree((prevDegree) => (prevDegree + 90) % 360);
+    };
+
     const handleTest = (formatValue) => {
         setFormat(formatValue)
         let img = document.getElementById("edit-image")
@@ -172,7 +178,8 @@ export default function Edit() {
             {imageData && imageData.image && <div className="p-4 sm:ml-64">
                 <div className="border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14 h-[90vh]">
                     <div className="flex items-center justify-center h-[75vh]">
-                        <img id="edit-image" alt="Edit Image" srcSet={`/.netlify/images?url=https://images.unsplash.com/${imageData.image.url}&w=${width}&h=${height}&fit=${fit.toLowerCase()}&fm=${format.toLowerCase()}&q=${imageQuality}`} />
+                        <img id="edit-image" alt="Edit Image" srcSet={`/.netlify/images?url=https://images.unsplash.com/${imageData.image.url}&w=${width}&h=${height}&fit=${fit.toLowerCase()}&fm=${format.toLowerCase()}&q=${imageQuality}`} onClick={handleClick}
+        className={`transform rotate-${rotationDegree}`}/>
                     </div>
                     <div className="flex items-end justify-center">
                         <div className=" bg-gray-800 w-[80vh] h-16  rounded-lg  ">
