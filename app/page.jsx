@@ -18,8 +18,12 @@ export default function Home() {
     }
 
     const addNewImage = async (image) => {
+        if(file){
+            await handleFileUpload();
+        }
         const url = image.split("?")[0];
-        const newImage = { imageID: generateRandomKey(), image: `https://images.unsplash.com/${url}?w=420&h=300`, visible: true };
+        // const newImage = { imageID: generateRandomKey(), image: `https://images.unsplash.com/${url}?w=420&h=300`, visible: true };
+        const newImage = { imageID: generateRandomKey(), image: `images/${username}/snapedit_1706947763885.png`, visible: true };
         addImage({
             imageID: newImage.imageID, imageMetadata: {
                 width: 360,
@@ -41,7 +45,7 @@ export default function Home() {
         setDisplayImages((prevImages) => prevImages.filter((image) => image.imageID !== imageId));
     };
 
-    const readFile = () => {
+    const readFile = async () => {
         const fileInput = document.getElementById('file-upload');
         const file = fileInput.files[0];
         if (file && !file.type.startsWith('image/')) {
@@ -49,29 +53,28 @@ export default function Home() {
             return;
         }
         setFileName(file.name);
-    }
-
-    const handleFileUpload = async () => {
-        setFile(event.target.files[0]);
-        if (!file) return;
-
-        const formData = new FormData();
-        formData.append('file', file);
-
+        setFile(file);
         try {
-            const response = await fetch('/api/uploadFile', {
+            console.log(file.buffer);
+            const formData = new FormData();
+            formData.append('file', file);
+            console.log(file);
+            const response = await fetch('/api/fileUpload', {
                 method: 'POST',
                 body: formData,
             });
-
             if (response.ok) {
                 console.log('File uploaded successfully');
             } else {
                 console.error('Error uploading file');
             }
         } catch (error) {
-            console.error('Error uploading file:', error);
+            console.error('An error occurred during file upload:', error);
         }
+    }
+
+    const handleFileUpload = async () => {
+ 
     };
 
 
@@ -293,7 +296,7 @@ export default function Home() {
                                                         <div className="mt-4 flex text-sm leading-6 text-gray-400">
                                                             <label htmlFor="file-upload" className="relative cursor-pointer rounded-md text-indigo-400 font-semibol focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 focus-within:ring-offset-gray-900 hover:text-indigo-500">
                                                                 <span>Upload a file</span>
-                                                                <input onChange={handleFileUpload} id="file-upload" accept="image/*" name="file-upload" type="file" className="sr-only" />
+                                                                <input onChange={readFile} id="file-upload" accept="image/*" name="file-upload" type="file" className="sr-only" />
                                                             </label>
 
                                                             <p className="pl-1">or drag and drop</p>
