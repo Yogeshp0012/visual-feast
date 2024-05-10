@@ -20,22 +20,24 @@ export default function Home() {
     const addNewImage = async (image) => {
         const url = image.split("?")[0];
         const newImage = { imageID: generateRandomKey(), image: `https://images.unsplash.com/${url}?w=420&h=300`, visible: true };
-        addImage({imageID: newImage.imageID, imageMetadata: {
-            width: 360,
-            height: 360,
-            quality: 50,
-            fit: "contain",
-            format: "webp",
-            url: url
-        }})
-                            //   srcSet= {`/.netlify/images?url=images/corgi.jpg&w=${width}&h=${height}&fit=${fit.toLowerCase()}&fm=${format.toLowerCase()}&q=${imageQuality}`}
+        addImage({
+            imageID: newImage.imageID, imageMetadata: {
+                width: 360,
+                height: 360,
+                quality: 50,
+                fit: "contain",
+                format: "webp",
+                url: url
+            }
+        })
+        //   srcSet= {`/.netlify/images?url=images/corgi.jpg&w=${width}&h=${height}&fit=${fit.toLowerCase()}&fm=${format.toLowerCase()}&q=${imageQuality}`}
 
         setDisplayImages((prevImages) => [...prevImages, newImage]);
         setOpenModal(false);
     }
 
     const deleteImage = (imageId) => {
-        deleteSelectedImage({imageID: imageId});
+        deleteSelectedImage({ imageID: imageId });
         setDisplayImages((prevImages) => prevImages.filter((image) => image.imageID !== imageId));
     };
 
@@ -49,7 +51,31 @@ export default function Home() {
         setFileName(file.name);
     }
 
+    const handleFileUpload = async () => {
+        setFile(event.target.files[0]);
+        if (!file) return;
 
+        const formData = new FormData();
+        formData.append('file', file);
+
+        try {
+            const response = await fetch('/api/uploadFile', {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (response.ok) {
+                console.log('File uploaded successfully');
+            } else {
+                console.error('Error uploading file');
+            }
+        } catch (error) {
+            console.error('Error uploading file:', error);
+        }
+    };
+
+
+    const [file, setFile] = useState(null);
     const [username, setUsername] = useState("");
     const [preset, setPreset] = useState(2);
     const [imageQuality, setImageQuality] = useState(49);;
@@ -90,13 +116,13 @@ export default function Home() {
         if (displayImages !== undefined) {
             setImagesLength(displayImages.length);
         }
-        if(username){
-        uploadImageData({
-            username: username,
-            images: [...displayImages]
-        });
-    }
-    }, [username,displayImages]);
+        if (username) {
+            uploadImageData({
+                username: username,
+                images: [...displayImages]
+            });
+        }
+    }, [username, displayImages]);
 
     return (
         <>
@@ -267,7 +293,7 @@ export default function Home() {
                                                         <div className="mt-4 flex text-sm leading-6 text-gray-400">
                                                             <label htmlFor="file-upload" className="relative cursor-pointer rounded-md text-indigo-400 font-semibol focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 focus-within:ring-offset-gray-900 hover:text-indigo-500">
                                                                 <span>Upload a file</span>
-                                                                <input onChange={readFile} id="file-upload" accept="image/*" name="file-upload" type="file" className="sr-only" />
+                                                                <input onChange={handleFileUpload} id="file-upload" accept="image/*" name="file-upload" type="file" className="sr-only" />
                                                             </label>
 
                                                             <p className="pl-1">or drag and drop</p>
