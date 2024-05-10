@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { listImageData, uploadImageData } from "./blobs/homepage-actions";
 import Link from "next/link";
-import { addImage } from "./blobs/images-actions";
+import { addImage, deleteSelectedImage } from "./blobs/images-actions";
 
 export default function Home() {
 
@@ -30,15 +30,11 @@ export default function Home() {
                             //   srcSet= {`/.netlify/images?url=images/corgi.jpg&w=${width}&h=${height}&fit=${fit.toLowerCase()}&fm=${format.toLowerCase()}&q=${imageQuality}`}
 
         setDisplayImages((prevImages) => [...prevImages, newImage]);
-        const allImages = [...displayImages, newImage];
-        uploadImageData({
-            username: username,
-            images: allImages
-        });
         setOpenModal(false);
     }
 
     const deleteImage = (imageId) => {
+        deleteSelectedImage({imageID: imageId});
         setDisplayImages((prevImages) => prevImages.filter((image) => image.imageID !== imageId));
     };
 
@@ -93,6 +89,12 @@ export default function Home() {
         if (displayImages !== undefined) {
             setImagesLength(displayImages.length);
         }
+        if(username){
+        uploadImageData({
+            username: username,
+            images: [...displayImages]
+        });
+    }
     }, [displayImages]);
 
     return (

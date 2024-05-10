@@ -15,7 +15,7 @@ export default function Edit() {
 
     return (
         <>
-        {imageData.image.quality}
+        {imageData && imageData.image && <p>{imageData.image.quality}</p>}
         </>
     );
 

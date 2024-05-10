@@ -14,7 +14,7 @@ export async function listImage({ imageID }) {
     return data;
 }
 
-export async function deleteImage({ imageID }) {
-    const data = await store().get(imageID);
+export async function deleteSelectedImage({ imageID }) {
+    const data = await store().delete(imageID);
     return data;
 }
