@@ -9,12 +9,6 @@ export async function uploadImageData({ username, images }) {
     await store().setJSON(username, { images: [...images] });
 }
 
-// export async function listImagesData() {
-//     const data = await store().list();
-//     const keys = data.blobs.map(({ key }) => key);
-//     return keys;
-// }
-
 export async function listImageData({ username }) {
     const data = await store().get(username ,{type: 'json'});
     return data;

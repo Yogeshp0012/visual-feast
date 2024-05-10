@@ -2,35 +2,45 @@
 
 import { useEffect, useState } from "react";
 import { listImageData, uploadImageData } from "./blobs/homepage-actions";
+import Link from "next/link";
+import { addImage } from "./blobs/images-actions";
 
 export default function Home() {
 
-    const generateRandomKey =(length = 10) => {
+    const generateRandomKey = (length = 10) => {
         let result = '';
         const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
         const charactersLength = characters.length;
         for (let i = 0; i < length; i++) {
-          result += characters.charAt(Math.floor(Math.random() * charactersLength));
+            result += characters.charAt(Math.floor(Math.random() * charactersLength));
         }
         return result;
-      }
+    }
 
     const addNewImage = async (image) => {
         const url = image.split("?")[0];
         const newImage = { imageID: generateRandomKey(), image: `https://images.unsplash.com/${url}?w=420&h=300`, visible: true };
-        setDisplayImages((prevImages) => [...prevImages, newImage]);
-    const allImages = [...displayImages, newImage];
+        addImage({imageID: newImage.imageID, imageMetadata: {
+            width: 360,
+            height: 360,
+            quality: 50,
+            fit: "contain",
+            format: "webp"
+        }})
+                            //   srcSet= {`/.netlify/images?url=images/corgi.jpg&w=${width}&h=${height}&fit=${fit.toLowerCase()}&fm=${format.toLowerCase()}&q=${imageQuality}`}
 
-    uploadImageData({
-        username: username,
-        images: allImages
-    });
+        setDisplayImages((prevImages) => [...prevImages, newImage]);
+        const allImages = [...displayImages, newImage];
+        uploadImageData({
+            username: username,
+            images: allImages
+        });
         setOpenModal(false);
     }
 
     const deleteImage = (imageId) => {
         setDisplayImages((prevImages) => prevImages.filter((image) => image.imageID !== imageId));
-      };
+    };
 
     const readFile = () => {
         const fileInput = document.getElementById('file-upload');
@@ -44,7 +54,6 @@ export default function Home() {
 
 
     const [username, setUsername] = useState("");
-    const [albumName, setAlbumName] = useState("Example");
     const [preset, setPreset] = useState(2);
     const [imageQuality, setImageQuality] = useState(49);;
     const [width, setWidth] = useState(32);
@@ -74,15 +83,15 @@ export default function Home() {
     }, []);
 
     useEffect(() => {
-        listImageData({ username }).then((data) =>{
-            if(data && data.images)
-            { setDisplayImages(data.images)}
-            else{setDisplayImages([])}});
+        listImageData({ username }).then((data) => {
+            if (data && data.images) { setDisplayImages(data.images) }
+            else { setDisplayImages([]) }
+        });
     }, [username]);
 
     useEffect(() => {
-        if(displayImages !== undefined){
-        setImagesLength(displayImages.length);
+        if (displayImages !== undefined) {
+            setImagesLength(displayImages.length);
         }
     }, [displayImages]);
 
@@ -125,12 +134,6 @@ export default function Home() {
             <aside id="logo-sidebar" className="fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform -translate-x-full bg-white border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700" aria-label="Sidebar">
                 <div className="h-full px-3 pb-4 overflow-y-auto bg-white dark:bg-gray-800">
                     <ul className="space-y-2 font-medium">
-                        <li className="p-2">
-                            <label htmlFor="album-name" className="block text-sm font-medium leading-6 text-white">Album Name</label>
-                            <div className="mt-2">
-                                <input value={albumName} onChange={(e) => setAlbumName(e.target.value)} type="text" name="album-name" id="album-name" autoComplete="album-name" className="block p-2 w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6 outline-none" />
-                            </div>
-                        </li>
                         <li className="p-2">
                             <label htmlFor="select-preset" className="block text-sm font-medium leading-6 text-white">Select Preset</label>
                             <div className="mt-2">
@@ -199,14 +202,14 @@ export default function Home() {
                         {displayImages && displayImages.map((imageObj) => (
                             <div key={`${imageObj.imageID}-${imageObj.image}`} className="flex flex-col items-center justify-center h-96 rounded bg-gray-50 dark:bg-gray-800">          <div className="flex flex-col justify-center items-center w-full h-full">
                                 <img
-                                    srcSet={`/.netlify/images?url=${imageObj.image}`}
+                                    srcSet={`/.netlify/images?url=${imageObj.image}&q=50`}
                                     alt="Image"
                                 />
                             </div>
                                 <div className="flex flex-row justify-center items-center w-full h-24">
-                                    <button type="button" className="inline-flex mr-10 w-32 justify-center disabled:cursor-not-allowed items-center gap-x-1.5 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                    <Link href={`/edit/${imageObj.imageID}`}><button type="button" className="inline-flex mr-10 w-32 justify-center disabled:cursor-not-allowed items-center gap-x-1.5 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                                         Edit
-                                    </button>
+                                    </button></Link>
                                     <button onClick={() => deleteImage(imageObj.imageID)} type="button" className="inline-flex w-32 justify-center disabled:cursor-not-allowed items-center gap-x-1.5 rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600">
                                         Delete
                                     </button>
@@ -220,7 +223,6 @@ export default function Home() {
                             </button>}
                             {openModal && <div className="rounded-md h-12 w-12 border-4 border-t-4 border-blue-500 animate-spin absolute" />}
                         </div></>
-                            //   srcSet= {`/.netlify/images?url=images/corgi.jpg&w=${width}&h=${height}&fit=${fit.toLowerCase()}&fm=${format.toLowerCase()}&q=${imageQuality}`}
                         }
                     </div>
                 </div>
