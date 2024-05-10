@@ -25,7 +25,8 @@ export default function Home() {
             height: 360,
             quality: 50,
             fit: "contain",
-            format: "webp"
+            format: "webp",
+            url: url
         }})
                             //   srcSet= {`/.netlify/images?url=images/corgi.jpg&w=${width}&h=${height}&fit=${fit.toLowerCase()}&fm=${format.toLowerCase()}&q=${imageQuality}`}
 
@@ -95,7 +96,7 @@ export default function Home() {
             images: [...displayImages]
         });
     }
-    }, [displayImages]);
+    }, [username,displayImages]);
 
     return (
         <>
