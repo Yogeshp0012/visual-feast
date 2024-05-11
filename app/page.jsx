@@ -237,7 +237,7 @@ export default function Home() {
 
     const [file, setFile] = useState(null);
     const [username, setUsername] = useState("");
-    const [preset, setPreset] = useState("Custom");
+    const [preset, setPreset] = useState("");
     const [imageQuality, setImageQuality] = useState(50);
     const [width, setWidth] = useState(32);
     const [height, setHeight] = useState(38);

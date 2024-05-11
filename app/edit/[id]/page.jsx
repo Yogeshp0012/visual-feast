@@ -1,6 +1,7 @@
 "use client";
 
-import { listImage } from "app/blobs/images-actions";
+import { addImage, listImage } from "app/blobs/images-actions";
+import { listPresets } from "app/blobs/preset-actions";
 import Link from "next/link";
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from "react";
@@ -9,21 +10,65 @@ export default function Edit() {
     const params = useParams();
     const [imageData, setImageData] = useState(null)
     const [username, setUsername] = useState("");
-    const [preset, setPreset] = useState(2);
+    const [preset, setPreset] = useState("");
     const [imageQuality, setImageQuality] = useState(49);;
     const [width, setWidth] = useState(32);
     const [height, setHeight] = useState(38);
-    const [fit, setFit] = useState("Contain");
+    const [fit, setFit] = useState("");
     const [format, setFormat] = useState("WEBP");
-    const [filter, setFilter] = useState("Default");
+    const [filter, setFilter] = useState("");
     const [fileName, setFileName] = useState("")
+    const [presets, setPresets] = useState([])
     const [imageName, setImageName] = useState("Test")
+
 
     const [rotationDegree, setRotationDegree] = useState(0);
 
     const handleClick = () => {
-      setRotationDegree((prevDegree) => (prevDegree + 90) % 360);
+        setRotationDegree((prevDegree) => (prevDegree + 90) % 360);
     };
+
+    const handlePreset = () => {
+        listPresets().then((data) => {
+            if (data && data.data) {
+                data.data.forEach((data) => {
+                    if(data.presetData.name == preset){
+                        setHeight(data.presetData.height);
+                        setWidth(data.presetData.width);
+                    }
+                })
+            }
+        });
+    };
+
+    const handleSave = async () => {
+        if (imageQuality < 1) {
+            setImageQuality(1)
+        }
+        if (imageQuality > 100) {
+            setImageQuality(100)
+        }
+        try {
+            addImage({
+                imageID: params.id, imageMetadata: {
+                    name: imageData.image.name,
+                    width: width,
+                    height: height,
+                    quality: imageQuality,
+                    fit: fit.toLowerCase(),
+                    format: format.toLowerCase(),
+                    url: imageData.image.url
+                }
+            })
+
+        }
+        catch (e) {
+            console.log(e);
+
+        }
+
+        return () => clearTimeout(timer);
+    }
 
     const handleTest = (formatValue) => {
         setFormat(formatValue)
@@ -34,11 +79,11 @@ export default function Edit() {
             var imgElement = document.createElement('img');
             imgElement.id = 'edit-image';
             imgElement.alt = 'Edit Image';
-            imgElement.setAttribute("srcSet" ,`/.netlify/images?url=https://images.unsplash.com/${imageData.image.url}&w=${width}&h=${height}&fit=${fit.toLowerCase()}&fm=${format.toLowerCase()}&q=${imageQuality}`);
+            imgElement.setAttribute("srcSet", `/.netlify/images?url=${imageData.image.url}&w=${width}&h=${height}&fit=${fit.toLowerCase()}&fm=${format.toLowerCase()}&q=${imageQuality}`);
             canvasElement.parentNode.replaceChild(imgElement, canvasElement);
         }
-        if(formatValue !== "Default"){
-        pixelsJS.filterImg(img, formatValue);
+        if (formatValue !== "Default") {
+            pixelsJS.filterImg(img, formatValue);
         }
     }
 
@@ -49,7 +94,16 @@ export default function Edit() {
         }
         const { id } = params;
         listImage({ imageID: id }).then((data) => setImageData(data))
+        listPresets().then((data) => {
+            if (data && data.data) {
+                setPresets(data.data);
+            }
+        });
     }, [params])
+
+    useEffect(() => {
+        handlePreset();
+    }, [preset])
 
     useEffect(() => {
         if (imageData && imageData.image) {
@@ -103,13 +157,13 @@ export default function Edit() {
                         <li className="p-2">
                             <label htmlFor="select-preset" className="block text-sm font-medium leading-6 text-white">Select Preset</label>
                             <div className="mt-2">
-                                <select id="select-preset" value={preset} onChange={(e) => setPreset(e.target.value)} name="select-preset" autoComplete="select-preset" className="block w-full rounded-md border-0 bg-white/5 py-1.5 p-2 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6 [&_*]:text-black">
-                                    <option>1</option>
-                                    <option>2</option>
-                                    <option>3</option>
-                                    <option>4</option>
-                                    <option>5</option>
-                                    <option>6</option>
+                                <select id="select-preset" value={preset} onChange={(e) => {
+                                    setPreset(e.target.value);
+                                }} name="select-preset" autoComplete="select-preset" className="block w-full rounded-md border-0 bg-white/5 py-1.5 p-2 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6 [&_*]:text-black">
+                                    <option value="custom" defaultValue>Custom</option>
+                                    {presets && presets.map((ele) => (
+                                        <option key={ele.presetData.name} value={ele.presetData.name}>{ele.presetData.name}</option>
+                                    ))}
                                 </select>
                             </div>
                         </li>
@@ -149,8 +203,8 @@ export default function Edit() {
                             <label htmlFor="image-fit" className="block text-sm font-medium leading-6 text-white">Fit Image</label>
                             <div className="mt-2">
                                 <select id="image-fit" name="image-fit" value={fit} onChange={(e) => setFit(e.target.value)} autoComplete="image-fit" className="block w-full rounded-md border-0 bg-white/5 py-1.5 p-2 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6 [&_*]:text-black">
-                                    <option>Contain</option>
-                                    <option>Cover</option>
+                                    <option value="contain">Contain</option>
+                                    <option value="cover">Cover</option>
                                 </select>
                             </div>
                         </li>
@@ -159,35 +213,26 @@ export default function Edit() {
                             <label htmlFor="formate" className="block text-sm font-medium leading-6 text-white">Format</label>
                             <div className="mt-2">
                                 <select id="formate" value={format} onChange={(e) => setFormat(e.target.value)} name="formate" autoComplete="formate" className="block w-full rounded-md border-0 bg-white/5 py-1.5 p-2 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6 [&_*]:text-black">
-                                    <option>AVIF</option>
-                                    <option>JPG</option>
-                                    <option>PNG</option>
-                                    <option>WEBP</option>
-                                    <option>GIF</option>
-                                    <option>BLURHASH</option>
+                                    <option value="avif">AVIF</option>
+                                    <option value="jpg">JPG</option>
+                                    <option value="png">PNG</option>
+                                    <option value="webp">WEBP</option>
+                                    <option value="gif">GIF</option>
+                                    <option value="blurhash">BLURHASH</option>
                                 </select>
                             </div>
                         </li>
                         <li className="p-2">
                             <div className="flex items-center justify-end gap-x-6 w-">
-                                <button type="submit" className="rounded-md bg-indigo-500 w-full px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">Apply</button>
+                                <button onClick={handleSave} type="submit" className="rounded-md bg-indigo-500 w-full px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">Save</button>
                             </div>
                         </li>
                     </ul>
                 </div>
             </aside>
             {imageData && imageData.image && <div className="p-4 sm:ml-64">
-                <div className="border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14 h-[90vh]">
-                    <div className="flex items-center justify-center h-[75vh]">
-                        <img id="edit-image" alt="Edit Image" srcSet={`/.netlify/images?url=https://images.unsplash.com/${imageData.image.url}&w=${width}&h=${height}&fit=${fit.toLowerCase()}&fm=${format.toLowerCase()}&q=${imageQuality}`} onClick={handleClick}
-        className={`transform rotate-${rotationDegree}`}/>
-                    </div>
-                    <div className="flex items-end justify-center">
-                        <div className=" bg-gray-800 w-[80vh] h-16  rounded-lg  ">
-                            asdad
-                        </div>
-                        <button onClick={handleTest} className="btn btn-primary">Test</button>
-                    </div>
+                <div className="border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14 min-h-[90vh] flex items-center justify-center">
+                    <img id="edit-image" alt="Edit Image" srcSet={`/.netlify/images?url=${imageData.image.url}&w=${width}&h=${height}&fit=${fit.toLowerCase()}&fm=${format.toLowerCase()}&q=${imageQuality}`} onClick={handleClick} className="max-w-full max-h-full transform rotate-90deg" />
                 </div>
             </div>}
         </>
