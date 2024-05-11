@@ -1,6 +1,7 @@
 "use client";
 
 import { listImage } from "app/blobs/images-actions";
+import Link from "next/link";
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from "react";
 
@@ -73,9 +74,9 @@ export default function Edit() {
                                     </path>
                                 </svg>
                             </button>
-                            <a href="https://flowbite.com" className="flex ms-2 md:me-24">
+                            <Link href="/" className="flex ms-2 md:me-24">
                                 <span className="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white logo">REPIX</span>
-                            </a>
+                            </Link>
                         </div>
                         <div className="flex items-center">
                             <div className="flex items-center ms-3">
