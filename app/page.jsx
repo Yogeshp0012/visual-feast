@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { listImageData, uploadImageData } from "./blobs/homepage-actions";
 import Link from "next/link";
 import { addImage, deleteSelectedImage } from "./blobs/images-actions";
+import { addPreset, listPresets } from "./blobs/preset-actions";
 
 export default function Home() {
 
@@ -17,7 +18,22 @@ export default function Home() {
         return result;
     }
 
+    function generateRandomFilename(prefix = '', suffix = '', length = 10) {
+        let result = '';
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        for (let i = 0; i < length; i++) {
+            result += characters.charAt(Math.floor(Math.random() * characters.length));
+        }
+        return prefix + result + suffix;
+    }
+
     const applyAllImages = () => {
+        if (imageQuality < 1) {
+            setImageQuality(1)
+        }
+        if (imageQuality > 100) {
+            setImageQuality(100)
+        }
         displayImages.map((data) => {
             addImage({
                 imageID: data.imageID, imageMetadata: {
@@ -52,6 +68,7 @@ export default function Home() {
             setDisplayImages((prevImages) => [...prevImages, newImage]);
             setOpenModal(false);
         }
+
     }
 
     const deleteImage = (imageId) => {
@@ -108,18 +125,20 @@ export default function Home() {
 
     const [file, setFile] = useState(null);
     const [username, setUsername] = useState("");
-    const [preset, setPreset] = useState(2);
+    const [preset, setPreset] = useState("Instagram");
     const [imageQuality, setImageQuality] = useState(49);;
     const [width, setWidth] = useState(32);
     const [height, setHeight] = useState(38);
     const [fit, setFit] = useState("Contain");
     const [format, setFormat] = useState("WEBP");
     const [fileName, setFileName] = useState("")
-    const [imageName, setImageName] = useState("Test")
+    const [imageName, setImageName] = useState(generateRandomFilename('myfile_'))
     const [imageUrl, setImageUrl] = useState("photo-1715128083452-065d5045bac1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwyfHx8ZW58MHx8fHx8")
     const [openModal, setOpenModal] = useState(false)
     const [displayImages, setDisplayImages] = useState([])
     const [imagesLength, setImagesLength] = useState(0)
+    const [presets, setPresets] = useState([])
+    const [loading, setLoading] = useState(true)
 
     useEffect(() => {
         const user = localStorage.getItem('username');
@@ -134,6 +153,7 @@ export default function Home() {
                     localStorage.setItem("username", randomUsername);
                 });
         }
+        addPreset({ presetData: [{ presetData: { width: 1080, height: 1080, name: "Instagram" } }, { presetData: { width: 1080, height: 1350, name: "Facebook Portrait" } }, { presetData: { width: 1200, height: 630, name: "Facebook Landscape" } }] })
     }, []);
 
     useEffect(() => {
@@ -141,6 +161,12 @@ export default function Home() {
             if (data && data.images) { setDisplayImages(data.images) }
             else { setDisplayImages([]) }
         });
+        listPresets().then((data) => {
+            if (data && data.data) {
+                setPresets(data.data);
+            }
+        });
+
     }, [username]);
 
     useEffect(() => {
@@ -151,7 +177,7 @@ export default function Home() {
             uploadImageData({
                 username: username,
                 images: [...displayImages]
-            });
+            }).then(() => setLoading(false));
         }
     }, [username, displayImages]);
 
@@ -197,20 +223,24 @@ export default function Home() {
                         <li className="p-2">
                             <label htmlFor="select-preset" className="block text-sm font-medium leading-6 text-white">Select Preset</label>
                             <div className="mt-2">
-                                <select id="select-preset" value={preset} onChange={(e) => setPreset(e.target.value)} name="select-preset" autoComplete="select-preset" className="block w-full rounded-md border-0 bg-white/5 py-1.5 p-2 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6 [&_*]:text-black">
-                                    <option>1</option>
-                                    <option>2</option>
-                                    <option>3</option>
-                                    <option>4</option>
-                                    <option>5</option>
-                                    <option>6</option>
+                                <select id="select-preset" value={preset} onChange={(e) => {
+                                    const selectedPreset = JSON.parse(e.target.value); // Parse the JSON string to an object
+                                    setHeight(selectedPreset.height);
+                                    setWidth(selectedPreset.width);
+                                    setPreset(selectedPreset.name);
+                                }} name="select-preset" autoComplete="select-preset" className="block w-full rounded-md border-0 bg-white/5 py-1.5 p-2 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6 [&_*]:text-black">
+                                    {presets && presets.map((ele) => (
+                                        <option key={ele.presetData.name} value={JSON.stringify(ele.presetData)}>{ele.presetData.name}</option>
+                                    ))}
                                 </select>
                             </div>
                         </li>
                         <li className="p-2">
                             <label htmlFor="image-quality" className="block text-sm font-medium leading-6 text-white">Images Quality</label>
                             <div className="mt-2">
-                                <input value={imageQuality} onChange={(e) => setImageQuality(e.target.value)} type="number" name="image-quality" id="image-quality" autoComplete="image-quality" className="block p-2 w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6 outline-none" />
+                                <input min="1" max="100" value={imageQuality} onChange={(e) => {
+                                    setImageQuality(e.target.value)
+                                }} type="number" name="image-quality" id="image-quality" autoComplete="image-quality" className="block p-2 w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6 outline-none" />
                             </div>
                         </li>
                         <li className="p-2">
@@ -256,37 +286,44 @@ export default function Home() {
                     </ul>
                 </div>
             </aside>
-            <div className="p-4 sm:ml-64">
-                <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14">
-                    <div className="grid lg:grid-cols-2 xl:grid-cols-3 gap-4 mb-4">
-                        {displayImages && displayImages.map((imageObj) => (
-                            <div key={`${imageObj.imageID}-${imageObj.image}`} className="flex flex-col items-center justify-center h-96 rounded bg-gray-50 dark:bg-gray-800">          <div className="flex flex-col justify-center items-center w-full h-full">
-                                <img
-                                    srcSet={`/.netlify/images?url=${imageObj.image}&q=50`}
-                                    alt="Image"
-                                />
-                            </div>
-                                <div className="flex flex-row justify-center items-center w-full h-24">
-                                    <Link href={`/edit/${imageObj.imageID}`}><button type="button" className="inline-flex mr-10 w-32 justify-center disabled:cursor-not-allowed items-center gap-x-1.5 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                                        Edit
-                                    </button></Link>
-                                    <button onClick={() => deleteImage(imageObj.imageID)} type="button" className="inline-flex w-32 justify-center disabled:cursor-not-allowed items-center gap-x-1.5 rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600">
-                                        Delete
-                                    </button>
-                                </div> </div>
-                        ))}
+            {loading && <><div className="p-4 sm:ml-64"><div className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14">
+                <div className="w-full h-[50vh] items-center justify-center flex">
+                <div className="rounded-md h-12 w-12 border-4 border-t-4 border-blue-500 animate-spin absolute">
+                </div>
+                </div></div></div> </>}
+            {
+                !loading && <div className="p-4 sm:ml-64">
+                    <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14">
+                        <div className="grid lg:grid-cols-2 xl:grid-cols-3 gap-4 mb-4">
+                            {displayImages && displayImages.map((imageObj) => (
+                                <div key={`${imageObj.imageID}-${imageObj.image}`} className="flex flex-col items-center justify-center h-96 rounded bg-gray-50 dark:bg-gray-800">          <div className="flex flex-col justify-center items-center w-full h-full">
+                                    <img
+                                        srcSet={`/.netlify/images?url=${imageObj.image}&q=50`}
+                                        alt="Image"
+                                    />
+                                </div>
+                                    <div className="flex flex-row justify-center items-center w-full h-24">
+                                        <Link href={`/edit/${imageObj.imageID}`}><button type="button" className="inline-flex mr-10 w-32 justify-center disabled:cursor-not-allowed items-center gap-x-1.5 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                            View / Edit
+                                        </button></Link>
+                                        <button onClick={() => deleteImage(imageObj.imageID)} type="button" className="inline-flex w-32 justify-center disabled:cursor-not-allowed items-center gap-x-1.5 rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600">
+                                            Delete
+                                        </button>
+                                    </div> </div>
+                            ))}
 
 
-                        {(imagesLength < 6) && <><div className="flex flex-col items-center justify-center h-96 rounded bg-gray-50 dark:bg-gray-800">
-                            {!openModal && <button onClick={() => setOpenModal(true)} type="button" className="w-48 rounded-md bg-indigo-600 p-2 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                                <div className="text-white">Add Image</div>
-                            </button>}
-                            {openModal && <div className="rounded-md h-12 w-12 border-4 border-t-4 border-blue-500 animate-spin absolute" />}
-                        </div></>
-                        }
+                            {(imagesLength < 6) && <><div className="flex flex-col items-center justify-center h-96 rounded bg-gray-50 dark:bg-gray-800">
+                                {!openModal && <button onClick={() => setOpenModal(true)} type="button" className="w-48 rounded-md bg-indigo-600 p-2 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                    <div className="text-white">Add Image</div>
+                                </button>}
+                                {openModal && <div className="rounded-md h-12 w-12 border-4 border-t-4 border-blue-500 animate-spin absolute" />}
+                            </div></>
+                            }
+                        </div>
                     </div>
                 </div>
-            </div>
+            }
             <>
                 {openModal && <div className="relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true">
                     <div className="fixed inset-0 bg-gray-900 bg-opacity-75 transition-opacity" />
