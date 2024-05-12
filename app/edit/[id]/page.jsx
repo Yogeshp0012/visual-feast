@@ -32,6 +32,7 @@ export default function Edit() {
     const [errorSnack, setErrorSnack] = useState(false)
     const [successSnack, setSuccessSnack] = useState(false)
     const [message, setMessage] = useState("")
+    const [buffer, setBuffer] = useState(null)
 
 
     const handleRotate = async (angle) => {
@@ -60,10 +61,12 @@ export default function Edit() {
             formData.append('imageName', imageName);
             formData.append('rotation', rotationAngle);
             formData.append('grayscale', filter);
-            if(format == "webp"){
+            const blob = new Blob([buffer], { type: 'image/*' });
+            formData.append("buffer", blob, "image.jpg");
+            if (format == "webp") {
                 formData.append('url', `/.netlify/images?url=${imageData.image.url}&fm=png&q=100`);
             }
-            else{
+            else {
                 formData.append('url', `/.netlify/images?url=${imageData.image.url}&fm=${format.toLowerCase()}&q=100`);
             }
             const response = await fetch('/api/saveFile', {
@@ -292,8 +295,21 @@ export default function Edit() {
     }, [preset])
 
     useEffect(() => {
-        console.log(imageData);
+        const fetchData = async () => {
+            try {
+                console.log(`http://localhost:8888/.netlify/images?url=${imageData.image.url}&fm=png`);
+                const response = await fetch(`http://localhost:8888/.netlify/images?url=${imageData.image.url}&fm=png`);
+                console.log(response);
+                const blob = await response.blob();
+                setBuffer(blob);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        
         if (imageData && imageData.image) {
+            fetchData();
             setImageQuality(imageData.image.quality)
             setWidth(imageData.image.width)
             setHeight(imageData.image.height)
@@ -323,7 +339,7 @@ export default function Edit() {
                         <div className="flex items-center">
                             <div className="flex items-center ms-3">
                                 <div>
-                                    <button onClick={() => navigator.clipboard.writeText(`https://repix.netlify.app/.netlify/images?url=${imageData.image.url}&w=${width}&h=${height}&fit=${fit.toLowerCase()}&fm=${format.toLowerCase()}&q=${imageQuality}`)} type="submit" className="rounded-md bg-indigo-500 w-full px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500" >
+                                    <button onClick={() => navigator.clipboard.writeText(`https://localhost:8888/.netlify/images?url=${imageData.image.url}&w=${width}&h=${height}&fit=${fit.toLowerCase()}&fm=${format.toLowerCase()}&q=${imageQuality}`)} type="submit" className="rounded-md bg-indigo-500 w-full px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500" >
                                         Copy
                                     </button>
                                 </div>
