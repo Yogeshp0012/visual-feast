@@ -18,6 +18,7 @@ export default function Edit() {
     const [imageQuality, setImageQuality] = useState(0);
     const [width, setWidth] = useState(32);
     const [height, setHeight] = useState(38);
+    const [saveProgress, setSaveProgress] = useState(0);
     const [fit, setFit] = useState("");
     const [format, setFormat] = useState("png");
     const [filter, setFilter] = useState("default");
@@ -28,11 +29,11 @@ export default function Edit() {
     const canvasRef = useRef(null);
     const [rotationAngle, setRotationAngle] = useState(0);
     const [loading, setLoading] = useState(true)
+    const [saving, setSaving] = useState(false)
     const [displayImages, setDisplayImages] = useState([])
     const [errorSnack, setErrorSnack] = useState(false)
     const [successSnack, setSuccessSnack] = useState(false)
     const [message, setMessage] = useState("")
-    const [buffer, setBuffer] = useState(null)
 
 
     const handleRotate = async (angle) => {
@@ -52,7 +53,12 @@ export default function Edit() {
 
 
     const handleSaveImage = async () => {
-        setLoading(true);
+        setSaving(true);
+        setSaveProgress(0);
+        const interval = setInterval(() => {
+            setSaveProgress(prevProgress => (prevProgress + 2 > 100 ? 0 : prevProgress + 2));
+          }, 1000);
+
         if (rotationAngle > 0 || filter != "default") {
             let imageName = generateRandomFilename('myfile_');
             const formData = new FormData();
@@ -61,8 +67,6 @@ export default function Edit() {
             formData.append('imageName', imageName);
             formData.append('rotation', rotationAngle);
             formData.append('grayscale', filter);
-            const blob = new Blob([buffer], { type: 'image/*' });
-            formData.append("buffer", blob, "image.jpg");
             if (format == "webp") {
                 formData.append('url', `/.netlify/images?url=${imageData.image.url}&fm=png&q=100`);
             }
@@ -178,7 +182,11 @@ export default function Edit() {
                     )
                 );
             })
-
+            setMessage("Image Reverted Successfully");
+            setSuccessSnack(true);
+            const timer = setTimeout(() => {
+                setSuccessSnack(false);
+            }, 2000);
 
 
         }
@@ -195,7 +203,7 @@ export default function Edit() {
         if (imageQuality > 100) {
             setImageQuality(100)
         }
-        setLoading(false);
+        setSaving(false);
         try {
             addImage({
                 imageID: params.id, imageMetadata: {
@@ -224,15 +232,17 @@ export default function Edit() {
                     image.imageID === params.id ? { ...image, url: filtered ? `/images/${username}/${imageName}.${format}` : imageData.image.url } : image
                 )
             );
-
-
+            setMessage("Image Saved Successfully");
+            setSuccessSnack(true);
+            const timer = setTimeout(() => {
+                setSuccessSnack(false);
+            }, 2000);
         }
         catch (e) {
             console.log(e);
 
         }
 
-        return () => clearTimeout(timer);
     }
 
     useEffect(() => {
@@ -295,21 +305,10 @@ export default function Edit() {
     }, [preset])
 
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                console.log(`http://localhost:8888/.netlify/images?url=${imageData.image.url}&fm=png`);
-                const response = await fetch(`http://localhost:8888/.netlify/images?url=${imageData.image.url}&fm=png`);
-                console.log(response);
-                const blob = await response.blob();
-                setBuffer(blob);
-            } catch (error) {
-                console.error(error);
-            }
-        };
 
-        
+
+
         if (imageData && imageData.image) {
-            fetchData();
             setImageQuality(imageData.image.quality)
             setWidth(imageData.image.width)
             setHeight(imageData.image.height)
@@ -339,7 +338,15 @@ export default function Edit() {
                         <div className="flex items-center">
                             <div className="flex items-center ms-3">
                                 <div>
-                                    <button onClick={() => navigator.clipboard.writeText(`https://localhost:8888/.netlify/images?url=${imageData.image.url}&w=${width}&h=${height}&fit=${fit.toLowerCase()}&fm=${format.toLowerCase()}&q=${imageQuality}`)} type="submit" className="rounded-md bg-indigo-500 w-full px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500" >
+                                    <button onClick={() => {
+                                        setMessage("Copied to clipboard successfully");
+                                        setSuccessSnack(true);
+                                        const timer = setTimeout(() => {
+                                            setSuccessSnack(false);
+                                        }, 2000);
+                                        navigator.clipboard.writeText(`https://repix.netlify.app/.netlify/images?url=${imageData.image.url}&w=${width}&h=${height}&fit=${fit.toLowerCase()}&fm=${format.toLowerCase()}&q=${imageQuality}`)
+                                    }
+                                    } type="submit" className="rounded-md bg-indigo-500 w-full px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500" >
                                         Copy
                                     </button>
                                 </div>
@@ -481,15 +488,15 @@ export default function Edit() {
                                 </select>
                             </div>
                         </li>
-                        <li className="p-2">
+                        {!saving && !loading && <li className="p-2">
                             <div className="flex items-center justify-end gap-x-6 w-">
                                 <button onClick={(e) => {
                                     handleRevert();
 
                                 }} type="submit" className="rounded-md bg-indigo-500 w-full px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">Revert to Original</button>
                             </div>
-                        </li>
-                        <li className="p-2">
+                        </li>}
+                        {!saving && !loading && <li className="p-2">
                             <div className="flex items-center justify-end gap-x-6 w-">
                                 <button onClick={(e) => {
                                     setLoading(true);
@@ -502,12 +509,12 @@ export default function Edit() {
                                     };
                                 }} type="submit" className="rounded-md bg-indigo-500 w-full px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">Rotate Image</button>
                             </div>
-                        </li>
-                        <li className="p-2">
+                        </li>}
+                        {!saving && !loading && <li className="p-2">
                             <div className="flex items-center justify-end gap-x-6 w-">
                                 <button onClick={handleSaveImage} type="submit" className="rounded-md bg-indigo-500 w-full px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">Save</button>
                             </div>
-                        </li>
+                        </li>}
                     </ul>
                 </div>
             </aside>
@@ -516,7 +523,14 @@ export default function Edit() {
                     <div className="rounded-md h-12 w-12 border-4 border-t-4 border-blue-500 animate-spin absolute">
                     </div>
                 </div></div></div> </>}
-            {!loading && imageData && imageData.image && <div className="p-4 sm:ml-64">
+            {saving && <><div className="p-4 sm:ml-64"><div className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14">
+                <div className="w-full h-[50vh] items-center justify-center flex">
+                    <div class="w-[30vw] bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                        <div class="bg-blue-600 h-2.5 rounded-full" style={{ width: `${saveProgress}%` }}></div>
+                    </div>
+
+                </div></div></div> </>}
+            {!loading && !saving && imageData && imageData.image && <div className="p-4 sm:ml-64">
                 <div id="image" className="border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14 min-h-[90vh] flex items-center justify-center">
                     <div style={{ transform: `rotate(${rotationAngle}deg)` }}>
                         {filter == "grayscale" && <ImageFilter

@@ -15,9 +15,9 @@ export async function POST(req) {
     const imageName = data.get("imageName");
     const rotation = data.get("rotation");
     const grayscale = data.get("grayscale");
-    const response = data.get("buffer");
     const url = data.get("url");
     const extension = data.get("extension").toLowerCase();
+    const response = await fetch("http://repix.netlify.app"+url);
     const imageBuffer = await response.arrayBuffer();
     let path = join("./", `public/images/${username}`)
     if (!fs.existsSync(path)) {
