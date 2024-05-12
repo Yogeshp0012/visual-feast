@@ -11,6 +11,8 @@ export async function GET(req) {
 
 export async function POST(req) {
     const data = await req.formData()
+    const username = data.get("username");
+    const imageName = data.get("imageName");
     const rotation = data.get("rotation");
     const grayscale = data.get("grayscale");
     const url = data.get("url");
