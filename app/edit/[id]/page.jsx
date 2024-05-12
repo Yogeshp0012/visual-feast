@@ -57,7 +57,7 @@ export default function Edit() {
         setSaveProgress(0);
         const interval = setInterval(() => {
             setSaveProgress(prevProgress => (prevProgress + 2 > 100 ? 0 : prevProgress + 2));
-          }, 1000);
+        }, 1000);
 
         if (rotationAngle > 0 || filter != "default") {
             let imageName = generateRandomFilename('myfile_');
@@ -243,8 +243,8 @@ export default function Edit() {
             console.log(e);
 
         }
-        finally{
-        setSaving(false);
+        finally {
+            setSaving(false);
 
         }
 
@@ -303,6 +303,12 @@ export default function Edit() {
         downloadLink.href = `/.netlify/images?url=${imageData.image.url}&w=${width}&h=${height}&fit=${fit.toLowerCase()}&fm=${format.toLowerCase()}&q=${imageQuality}`;
         downloadLink.download = imageData.image.name + '.' + format;
         downloadLink.click();
+        setMessage("Download Successful...")
+        setSuccessSnack(true);
+        timer = setTimeout(() => {
+            setSuccessSnack(false);
+        }, 2000);
+        return () => clearTimeout(timer);
     };
 
     useEffect(() => {

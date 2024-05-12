@@ -11,18 +11,13 @@ export async function GET(req) {
 
 export async function POST(req) {
     const data = await req.formData()
-    const username = data.get("username");
-    const imageName = data.get("imageName");
     const rotation = data.get("rotation");
     const grayscale = data.get("grayscale");
     const url = data.get("url");
     const extension = data.get("extension").toLowerCase();
     const response = await fetch("https://repix.netlify.app" + url);
     const imageBuffer = await response.arrayBuffer();
-    let path = join("./", `public/images/${username}`)
-    if (!fs.existsSync(path)) {
-        fs.mkdirSync(path, { recursive: true, mode: 0o755 });
-    }
+
     let rotatedImageData = Buffer.from(imageBuffer);
     const image = await Jimp.read(imageBuffer);
     image.rotate(360 - parseInt(rotation));

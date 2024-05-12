@@ -65,6 +65,11 @@ export default function Home() {
     }
 
     const handleDownload = async () => {
+        setMessage("Downloading.....")
+        setSuccessSnack(true);
+        let timer = setTimeout(() => {
+            setSuccessSnack(false);
+        }, 2000);
         if (imagesLength < 1) {
             setMessage("Please upload an image first.")
             setErrorSnack(true);
@@ -87,6 +92,13 @@ export default function Home() {
         downloadLink.href = URL.createObjectURL(zipBlob);
         downloadLink.download = zipFilename;
         downloadLink.click();
+        setMessage("Download Successful...")
+        setSuccessSnack(true);
+        timer = setTimeout(() => {
+            setSuccessSnack(false);
+        }, 2000);
+        return () => clearTimeout(timer);
+
     }
 
     const applyAllImages = async () => {
