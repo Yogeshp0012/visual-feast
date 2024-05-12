@@ -29,6 +29,9 @@ export default function Edit() {
     const [rotationAngle, setRotationAngle] = useState(0);
     const [loading, setLoading] = useState(true)
     const [displayImages, setDisplayImages] = useState([])
+    const [errorSnack, setErrorSnack] = useState(false)
+    const [successSnack, setSuccessSnack] = useState(false)
+    const [message, setMessage] = useState("")
 
 
     const handleRotate = async (angle) => {
@@ -48,6 +51,7 @@ export default function Edit() {
 
 
     const handleSaveImage = async () => {
+        setLoading(true);
         if (rotationAngle > 0 || filter != "default") {
             let imageName = generateRandomFilename('myfile_');
             const formData = new FormData();
@@ -56,19 +60,23 @@ export default function Edit() {
             formData.append('imageName', imageName);
             formData.append('rotation', rotationAngle);
             formData.append('grayscale', filter);
-            formData.append('url', `/.netlify/images?url=${imageData.image.url}&fm=${format.toLowerCase()}&q=100`);
+            if(format == "webp"){
+                formData.append('url', `/.netlify/images?url=${imageData.image.url}&fm=png&q=100`);
+            }
+            else{
+                formData.append('url', `/.netlify/images?url=${imageData.image.url}&fm=${format.toLowerCase()}&q=100`);
+            }
             const response = await fetch('/api/saveFile', {
                 method: 'POST',
                 body: formData,
             });
-            console.log(imageName);
             if (response.ok) {
-                await handleSave(true, imageName);
+                handleSave(true, imageName);
                 setRotationAngle(0);
             }
         }
         else {
-            await handleSave(false);
+            handleSave(false);
         }
     };
 
@@ -152,7 +160,7 @@ export default function Edit() {
                 })
                 setImageData({
                     image: {
-                        name:imageData.image.name,
+                        name: imageData.image.name,
                         width: width,
                         height: height,
                         quality: imageQuality,
@@ -184,6 +192,7 @@ export default function Edit() {
         if (imageQuality > 100) {
             setImageQuality(100)
         }
+        setLoading(false);
         try {
             addImage({
                 imageID: params.id, imageMetadata: {
@@ -276,7 +285,7 @@ export default function Edit() {
         downloadLink.href = `/.netlify/images?url=${imageData.image.url}&w=${width}&h=${height}&fit=${fit.toLowerCase()}&fm=${format.toLowerCase()}&q=${imageQuality}`;
         downloadLink.download = imageData.image.name + '.' + format;
         downloadLink.click();
-      };
+    };
 
     useEffect(() => {
         handlePreset();
@@ -312,9 +321,9 @@ export default function Edit() {
                             </Link>
                         </div>
                         <div className="flex items-center">
-                        <div className="flex items-center ms-3">
+                            <div className="flex items-center ms-3">
                                 <div>
-                                    <button onClick={() =>  navigator.clipboard.writeText(`http://localhost:8888/.netlify/images?url=${imageData.image.url}&w=${width}&h=${height}&fit=${fit.toLowerCase()}&fm=${format.toLowerCase()}&q=${imageQuality}`)} type="submit" className="rounded-md bg-indigo-500 w-full px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500" >
+                                    <button onClick={() => navigator.clipboard.writeText(`https://repix.netlify.app/.netlify/images?url=${imageData.image.url}&w=${width}&h=${height}&fit=${fit.toLowerCase()}&fm=${format.toLowerCase()}&q=${imageQuality}`)} type="submit" className="rounded-md bg-indigo-500 w-full px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500" >
                                         Copy
                                     </button>
                                 </div>
@@ -344,7 +353,14 @@ export default function Edit() {
                             <label htmlFor="select-preset" className="block text-sm font-medium leading-6 text-white">Select Preset</label>
                             <div className="mt-2">
                                 <select id="select-preset" value={preset} onChange={(e) => {
+                                    setLoading(true);
                                     setPreset(e.target.value);
+                                    setTimeout(() => {
+                                        setLoading(false);
+                                    }, 3000);
+                                    return () => {
+                                        clearTimeout(timer);
+                                    };
                                 }} name="select-preset" autoComplete="select-preset" className="block w-full rounded-md border-0 bg-white/5 py-1.5 p-2 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6 [&_*]:text-black">
                                     <option value="custom" defaultValue>Custom</option>
                                     {presets && presets.map((ele) => (
@@ -356,7 +372,16 @@ export default function Edit() {
                         <li className="p-2">
                             <label htmlFor="image-quality" className="block text-sm font-medium leading-6 text-white">Image Quality</label>
                             <div className="mt-2">
-                                <input value={imageQuality} onChange={(e) => setImageQuality(e.target.value)} type="number" name="image-quality" id="image-quality" autoComplete="image-quality" className="block p-2 w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6 outline-none" />
+                                <input value={imageQuality} onChange={(e) => {
+                                    setLoading(true);
+                                    setImageQuality(e.target.value);
+                                    setTimeout(() => {
+                                        setLoading(false);
+                                    }, 3000);
+                                    return () => {
+                                        clearTimeout(timer);
+                                    };
+                                }} type="number" name="image-quality" id="image-quality" autoComplete="image-quality" className="block p-2 w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6 outline-none" />
                             </div>
                         </li>
                         <li className="p-2">
@@ -373,19 +398,46 @@ export default function Edit() {
                         <li className="p-2">
                             <label htmlFor="image-width" className="block text-sm font-medium leading-6 text-white">Width</label>
                             <div className="mt-2">
-                                <input type="number" value={width} onChange={(e) => setWidth(e.target.value)} name="image-width" id="image-width" autoComplete="image-width" className="block p-2 w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6 outline-none" />
+                                <input type="number" value={width} onChange={(e) => {
+                                    setLoading(true);
+                                    setWidth(e.target.value);
+                                    setTimeout(() => {
+                                        setLoading(false);
+                                    }, 3000);
+                                    return () => {
+                                        clearTimeout(timer);
+                                    };
+                                }} name="image-width" id="image-width" autoComplete="image-width" className="block p-2 w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6 outline-none" />
                             </div>
                         </li>
                         <li className="p-2">
                             <label htmlFor="image-height" className="block text-sm font-medium leading-6 text-white">Height</label>
                             <div className="mt-2">
-                                <input type="number" value={height} onChange={(e) => setHeight(e.target.value)} name="image-height" id="image-height" autoComplete="image-height" className="block p-2 w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6 outline-none" />
+                                <input type="number" value={height} onChange={(e) => {
+                                    setLoading(true);
+                                    setHeight(e.target.value);
+                                    setTimeout(() => {
+                                        setLoading(false);
+                                    }, 3000);
+                                    return () => {
+                                        clearTimeout(timer);
+                                    };
+                                }} name="image-height" id="image-height" autoComplete="image-height" className="block p-2 w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6 outline-none" />
                             </div>
                         </li>
                         <li className="p-2">
                             <label htmlFor="image-fit" className="block text-sm font-medium leading-6 text-white">Fit Image</label>
                             <div className="mt-2">
-                                <select id="image-fit" name="image-fit" value={fit} onChange={(e) => setFit(e.target.value)} autoComplete="image-fit" className="block w-full rounded-md border-0 bg-white/5 py-1.5 p-2 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6 [&_*]:text-black">
+                                <select id="image-fit" name="image-fit" value={fit} onChange={(e) => {
+                                    setLoading(true);
+                                    setFit(e.target.value);
+                                    setTimeout(() => {
+                                        setLoading(false);
+                                    }, 3000);
+                                    return () => {
+                                        clearTimeout(timer);
+                                    };
+                                }} autoComplete="image-fit" className="block w-full rounded-md border-0 bg-white/5 py-1.5 p-2 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6 [&_*]:text-black">
                                     <option value="contain">Contain</option>
                                     <option value="cover">Cover</option>
                                 </select>
@@ -395,7 +447,16 @@ export default function Edit() {
                         <li className="p-2">
                             <label htmlFor="formate" className="block text-sm font-medium leading-6 text-white">Format</label>
                             <div className="mt-2">
-                                <select id="formate" value={format} onChange={(e) => setFormat(e.target.value)} name="formate" autoComplete="formate" className="block w-full rounded-md border-0 bg-white/5 py-1.5 p-2 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6 [&_*]:text-black">
+                                <select id="formate" value={format} onChange={(e) => {
+                                    setLoading(true);
+                                    setFormat(e.target.value);
+                                    setTimeout(() => {
+                                        setLoading(false);
+                                    }, 3000);
+                                    return () => {
+                                        clearTimeout(timer);
+                                    };
+                                }} name="formate" autoComplete="formate" className="block w-full rounded-md border-0 bg-white/5 py-1.5 p-2 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6 [&_*]:text-black">
                                     <option value="avif">AVIF</option>
                                     <option value="jpg">JPG</option>
                                     <option value="png">PNG</option>
@@ -406,12 +467,24 @@ export default function Edit() {
                         </li>
                         <li className="p-2">
                             <div className="flex items-center justify-end gap-x-6 w-">
-                                <button onClick={handleRevert} type="submit" className="rounded-md bg-indigo-500 w-full px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">Revert to Original</button>
+                                <button onClick={(e) => {
+                                    handleRevert();
+
+                                }} type="submit" className="rounded-md bg-indigo-500 w-full px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">Revert to Original</button>
                             </div>
                         </li>
                         <li className="p-2">
                             <div className="flex items-center justify-end gap-x-6 w-">
-                                <button onClick={() => handleRotate(90)} type="submit" className="rounded-md bg-indigo-500 w-full px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">Rotate Image</button>
+                                <button onClick={(e) => {
+                                    setLoading(true);
+                                    handleRotate(90)
+                                    setTimeout(() => {
+                                        setLoading(false);
+                                    }, 500);
+                                    return () => {
+                                        clearTimeout(timer);
+                                    };
+                                }} type="submit" className="rounded-md bg-indigo-500 w-full px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">Rotate Image</button>
                             </div>
                         </li>
                         <li className="p-2">
@@ -430,23 +503,33 @@ export default function Edit() {
             {!loading && imageData && imageData.image && <div className="p-4 sm:ml-64">
                 <div id="image" className="border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14 min-h-[90vh] flex items-center justify-center">
                     <div style={{ transform: `rotate(${rotationAngle}deg)` }}>
-                        {filter == "grayscale" &&  <ImageFilter
+                        {filter == "grayscale" && <ImageFilter
                             image={`/.netlify/images?url=${imageData.image.url}&w=${width}&h=${height}&fit=${fit.toLowerCase()}&fm=${format.toLowerCase()}&q=${imageQuality}`}
                             filter={"grayscale"}
                         />}
-                        {filter == "invert" &&  <ImageFilter
+                        {filter == "invert" && <ImageFilter
                             image={`/.netlify/images?url=${imageData.image.url}&w=${width}&h=${height}&fit=${fit.toLowerCase()}&fm=${format.toLowerCase()}&q=${imageQuality}`}
                             filter={"invert"}
                         />}
-                        {filter == "sepia" &&  <ImageFilter
+                        {filter == "sepia" && <ImageFilter
                             image={`/.netlify/images?url=${imageData.image.url}&w=${width}&h=${height}&fit=${fit.toLowerCase()}&fm=${format.toLowerCase()}&q=${imageQuality}`}
                             filter={"sepia"}
                         />}
-                        {filter == "default" &&  <ImageFilter
+                        {filter == "default" && <ImageFilter
                             image={`/.netlify/images?url=${imageData.image.url}&w=${width}&h=${height}&fit=${fit.toLowerCase()}&fm=${format.toLowerCase()}&q=${imageQuality}`}
                         />}
                     </div>
                 </div>
+            </div>}
+            {successSnack && <div role="alert" className="alert w-[50vw] md:w-[20vw] justify-center alert-success fixed bottom-4 right-4 flex items-center bg-green-100 text-green-900 rounded-lg p-4 shadow-md">
+                <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current flex-shrink-0 h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>{message}</span>
+            </div>}
+            {errorSnack && <div role="alert" className="alert w-[50vw] md:w-[20vw] justify-center alert-success fixed bottom-4 right-4 flex items-center alert-error rounded-lg p-4 shadow-md">
+                <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                <span>{message}</span>
             </div>}
         </>
     );

@@ -6,6 +6,7 @@ function store() {
 }
 
 export async function addHistory({ imageID, imageURL }) {
+    console.log(imageID);
     await store().setJSON(imageID, { image: imageURL });
 }
 

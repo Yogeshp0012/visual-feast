@@ -8,7 +8,10 @@ import { addImage, deleteSelectedImage, listImage } from "./blobs/images-actions
 import { addPreset, listPresets } from "./blobs/preset-actions";
 import JSZip from 'jszip';
 
+
 export default function Home() {
+
+
 
     const generateRandomKey = (length = 10) => {
         let result = '';
@@ -53,6 +56,11 @@ export default function Home() {
         }
         finally {
             document.getElementById('my_modal_1').close()
+            listPresets().then((data) => {
+                if (data && data.data) {
+                    setPresets(data.data);
+                }
+            });
         }
     }
 
@@ -111,7 +119,7 @@ export default function Home() {
                         format: format.toLowerCase(),
                         url: data.image.url
                     }
-                })  
+                })
             }
             setMessage("The filters are applied successfully. Please view the image to see the changes.")
             setSuccessSnack(true);
@@ -149,7 +157,7 @@ export default function Home() {
                     url: `https://images.unsplash.com/${url}`
                 }
             })
-            addHistory({imageID: newImage.imageID,imageURL:`https://images.unsplash.com/${url}`})
+            addHistory({ imageID: newImage.imageID, imageURL: `https://images.unsplash.com/${url}` })
             setDisplayImages((prevImages) => [...prevImages, newImage]);
             setOpenModal(false);
             setMessage("Image Added Successfully")
@@ -212,7 +220,8 @@ export default function Home() {
                     }
                 })
                 setDisplayImages((prevImages) => [...prevImages, newImage]);
-                addHistory(newImage.imageID,{image:`/images/${username}/${imageName}.${fileExtension}` })
+                console.log(newImage.imageID);
+                addHistory({ imageID: newImage.imageID, imageURL: `/images/${username}/${imageName}.${fileExtension}` })
                 setOpenModal(false);
                 setMessage("Image Added Successfully")
                 setSuccessSnack(true);
@@ -244,7 +253,7 @@ export default function Home() {
     const [width, setWidth] = useState(32);
     const [height, setHeight] = useState(38);
     const [fit, setFit] = useState("Contain");
-    const [format, setFormat] = useState("PNG");
+    const [format, setFormat] = useState("png");
     const [fileName, setFileName] = useState("")
     const [imageName, setImageName] = useState(generateRandomFilename('myfile_'))
     const [imageUrl, setImageUrl] = useState("photo-1715128083452-065d5045bac1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwyfHx8ZW58MHx8fHx8")
@@ -289,6 +298,24 @@ export default function Home() {
 
     }, [username]);
 
+    
+    const handlePreset = () => {
+        listPresets().then((data) => {
+            if (data && data.data) {
+                data.data.forEach((data) => {
+                    if (data.presetData.name == preset) {
+                        setHeight(data.presetData.height);
+                        setWidth(data.presetData.width);
+                    }
+                })
+            }
+        });
+    };
+
+    useEffect(() => {
+        handlePreset();
+    }, [preset])
+
     useEffect(() => {
         if (displayImages !== undefined) {
             setImagesLength(displayImages.length);
@@ -307,7 +334,7 @@ export default function Home() {
                 <div className="px-3 py-3 lg:px-5 lg:pl-3">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center justify-start rtl:justify-end">
-                            <button onClick={()=>document.getElementById('logo-sidebar').classList.toggle("-translate-x-full")} data-drawer-target="logo-sidebar" data-drawer-toggle="logo-sidebar" aria-controls="logo-sidebar" type="button" className="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
+                            <button onClick={() => document.getElementById('logo-sidebar').classList.toggle("-translate-x-full")} data-drawer-target="logo-sidebar" data-drawer-toggle="logo-sidebar" aria-controls="logo-sidebar" type="button" className="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
                                 <span className="sr-only">Open sidebar</span>
                                 <svg className="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                     <path clipRule="evenodd" fillRule="evenodd" d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z">
@@ -340,22 +367,15 @@ export default function Home() {
             <aside id="logo-sidebar" className="fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform -translate-x-full bg-white border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700" aria-label="Sidebar">
                 <div className="h-full px-3 pb-4 overflow-y-auto bg-white dark:bg-gray-800">
                     <ul className="space-y-2 font-medium">
-                        <li className="p-2">
+                    <li className="p-2">
                             <label htmlFor="select-preset" className="block text-sm font-medium leading-6 text-white">Select Preset</label>
                             <div className="mt-2">
                                 <select id="select-preset" value={preset} onChange={(e) => {
-                                    const selectedPreset = JSON.parse(e.target.value);
-                                    if (selectedPreset.name == "Custom") {
-                                        setPreset(selectedPreset.name);
-                                        return;
-                                    }
-                                    setHeight(selectedPreset.height);
-                                    setWidth(selectedPreset.width);
-                                    setPreset(selectedPreset.name);
+                                    setPreset(e.target.value);
                                 }} name="select-preset" autoComplete="select-preset" className="block w-full rounded-md border-0 bg-white/5 py-1.5 p-2 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6 [&_*]:text-black">
-                                    <option value={JSON.stringify({ name: "Custom" })}>Custom</option>
+                                    <option value="custom" defaultValue>Custom</option>
                                     {presets && presets.map((ele) => (
-                                        <option key={ele.presetData.name} value={JSON.stringify(ele.presetData)}>{ele.presetData.name}</option>
+                                        <option key={ele.presetData.name} value={ele.presetData.name}>{ele.presetData.name}</option>
                                     ))}
                                 </select>
                             </div>
@@ -389,16 +409,15 @@ export default function Home() {
                                 </select>
                             </div>
                         </li>
-
                         <li className="p-2">
                             <label htmlFor="formate" className="block text-sm font-medium leading-6 text-white">Format</label>
                             <div className="mt-2">
                                 <select id="formate" value={format} onChange={(e) => setFormat(e.target.value)} name="formate" autoComplete="formate" className="block w-full rounded-md border-0 bg-white/5 py-1.5 p-2 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6 [&_*]:text-black">
-                                    <option>AVIF</option>
-                                    <option>JPG</option>
-                                    <option>PNG</option>
-                                    <option>GIF</option>
-                                    <option>BLURHASH</option>
+                                    <option value="avif">AVIF</option>
+                                    <option value="jpg">JPG</option>
+                                    <option value="png">PNG</option>
+                                    <option value="gif">GIF</option>
+                                    <option value="blurhash">BLURHASH</option>
                                 </select>
                             </div>
                         </li>
@@ -432,7 +451,7 @@ export default function Home() {
                                     />
                                 </div>
                                     <div className="flex flex-row justify-center items-center w-full h-24">
-                                        <Link href={`/edit/${imageObj.imageID}`}><button type="button" className="inline-flex mr-10 w-32 justify-center disabled:cursor-not-allowed items-center gap-x-1.5 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                        <Link href={`/edit/${imageObj.imageID}`}><button onClick={()=>setLoading(true)} type="button" className="inline-flex mr-10 w-32 justify-center disabled:cursor-not-allowed items-center gap-x-1.5 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                                             View / Edit
                                         </button></Link>
                                         <button onClick={() => deleteImage(imageObj.imageID)} type="button" className="inline-flex w-32 justify-center disabled:cursor-not-allowed items-center gap-x-1.5 rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600">
@@ -443,7 +462,7 @@ export default function Home() {
 
 
                             {(imagesLength < 6) && <><div className="flex flex-col items-center justify-center h-96 rounded bg-gray-50 dark:bg-gray-800">
-                                {!openModal && <button onClick={() => {setFile(null);setFileName("");setImageName(generateRandomFilename('myfile_')); setOpenModal(true); document.getElementById("add_image").showModal() }} type="button" className="w-48 rounded-md bg-indigo-600 p-2 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                {!openModal && <button onClick={() => { setFile(null); setFileName(""); setImageName(generateRandomFilename('myfile_')); setOpenModal(true); document.getElementById("add_image").showModal() }} type="button" className="w-48 rounded-md bg-indigo-600 p-2 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                                     <div className="text-white">Add Image</div>
                                 </button>}
                                 {openModal && <div className="rounded-md h-12 w-12 border-4 border-t-4 border-blue-500 animate-spin absolute" />}
@@ -496,13 +515,13 @@ export default function Home() {
                             </div>
                             {fileName && <span className="mt-4 inline-flex items-center rounded-md bg-indigo-400/10 px-2 py-1 text-xs font-medium text-indigo-400 ring-1 ring-inset ring-indigo-400/30">{fileName}</span>}
                             <div className="mt-8">
-                            <div className="bg-gray-800 sm:flex sm:flex-row-reverse ">
-                                <button onClick={() => {addNewImage(imageUrl);document.getElementById("add_image").close(); setOpenModal(false)}} type="button" className="ml-3 inline-flex disabled:cursor-not-allowed items-center gap-x-1.5 justify-center  rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 w-20">
-                                    Add
-                                </button>
-                                <button onClick={() => {document.getElementById("add_image").close(); setOpenModal(false)}} type="button" className="mt-3 inline-flex justify-center rounded-md px-3 py-2 text-sm font-semibold text-gray-100 shadow-sm ring-1 ring-inset ring-gray-300 sm:mt-0 w-20">Cancel</button>
+                                <div className="bg-gray-800 sm:flex sm:flex-row-reverse ">
+                                    <button onClick={() => { addNewImage(imageUrl); document.getElementById("add_image").close(); setOpenModal(false) }} type="button" className="ml-3 inline-flex disabled:cursor-not-allowed items-center gap-x-1.5 justify-center  rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 w-20">
+                                        Add
+                                    </button>
+                                    <button onClick={() => { document.getElementById("add_image").close(); setOpenModal(false) }} type="button" className="mt-3 inline-flex justify-center rounded-md px-3 py-2 text-sm font-semibold text-gray-100 shadow-sm ring-1 ring-inset ring-gray-300 sm:mt-0 w-20">Cancel</button>
+                                </div>
                             </div>
-                        </div>
                         </div>
                     </div>
                 </dialog>
