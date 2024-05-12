@@ -140,6 +140,7 @@ export default function Home() {
     }
 
     const addNewImage = async (image) => {
+        setLoading(true);
         if (file) {
             await handleFileUpload();
         }
@@ -165,7 +166,7 @@ export default function Home() {
             const timer = setTimeout(() => {
                 setSuccessSnack(false);
             }, 2000);
-
+            setLoading(false);
             return () => clearTimeout(timer);
         }
 
@@ -190,6 +191,16 @@ export default function Home() {
             setFileName("");
             return;
         }
+        if(file.size > 1 * 1024 * 1024){
+            setFileName("");
+            setMessage("Upload a file less than 1MB")
+                setErrorSnack(true);
+                const timer = setTimeout(() => {
+                    setErrorSnack(false);
+                }, 2000);
+
+                return () => clearTimeout(timer);
+        }
         setFileName(file.name);
         setFile(file);
     }
@@ -201,12 +212,15 @@ export default function Home() {
             formData.append('key', '8a41ca98e3aace2b66b1717708ac964f');
             formData.append('image', file);
 
-            const response = await fetch('https://api.imgbb.com/1/upload?expiration=600', {
+            const response = await fetch('https://api.imgbb.com/1/upload', {
                 method: 'POST',
                 body: formData,
             });
+            const data = await response.json();
+            let url = data.data.url;
+            setLoading(false);
             if (response.ok) {
-                const newImage = { imageID: generateRandomKey(), image: `/images/${username}/${imageName}.${fileExtension}&w=300&h=300`, url: `/images/${username}/${imageName}.${fileExtension}` };
+                const newImage = { imageID: generateRandomKey(), image: url, url: url };
                 addImage({
                     imageID: newImage.imageID, imageMetadata: {
                         name: imageName,
@@ -215,12 +229,12 @@ export default function Home() {
                         quality: 50,
                         fit: "contain",
                         format: "png",
-                        url: `/images/${username}/${imageName}.${fileExtension}`
+                        url: url
                     }
                 })
                 setDisplayImages((prevImages) => [...prevImages, newImage]);
                 console.log(newImage.imageID);
-                addHistory({ imageID: newImage.imageID, imageURL: `/images/${username}/${imageName}.${fileExtension}` })
+                addHistory({ imageID: newImage.imageID, imageURL: url })
                 setOpenModal(false);
                 setMessage("Image Added Successfully")
                 setSuccessSnack(true);
@@ -507,7 +521,7 @@ export default function Home() {
 
                                             <p className="pl-1">or drag and drop</p>
                                         </div>
-                                        <p className="text-xs leading-5 text-gray-400">PNG, JPG, GIF up to 10MB</p>
+                                        <p className="text-xs leading-5 text-gray-400">PNG, JPG up to 1MB</p>
                                     </div>
 
                                 </div>

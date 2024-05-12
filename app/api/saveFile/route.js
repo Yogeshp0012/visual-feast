@@ -17,7 +17,7 @@ export async function POST(req) {
     const grayscale = data.get("grayscale");
     const url = data.get("url");
     const extension = data.get("extension").toLowerCase();
-    const response = await fetch("http://repix.netlify.app"+url);
+    const response = await fetch("http://localhost:8888" + url);
     const imageBuffer = await response.arrayBuffer();
     let path = join("./", `public/images/${username}`)
     if (!fs.existsSync(path)) {
@@ -26,19 +26,25 @@ export async function POST(req) {
     }
     let rotatedImageData = Buffer.from(imageBuffer);
     const image = await Jimp.read(imageBuffer);
-    image.rotate(360-parseInt(rotation));
-    if(grayscale == "grayscale"){
+    image.rotate(360 - parseInt(rotation));
+    if (grayscale == "grayscale") {
         image.greyscale();
     }
-    if(grayscale == "invert"){
+    if (grayscale == "invert") {
         image.invert();
     }
-    if(grayscale == "sepia"){
+    if (grayscale == "sepia") {
         image.sepia();
     }
     rotatedImageData = await image.getBufferAsync(Jimp.AUTO);
-    path = join("./", `public/images/${username}`, imageName + "." + extension)
-    fs.writeFileSync(path, rotatedImageData);
-    console.log(`Open ${path}`);
-    return new Response("ok");
+    const imageFile = new File([rotatedImageData], `image.${extension}`, { type: `image/${extension}` });
+    const formData = new FormData();
+    formData.append('key', '8a41ca98e3aace2b66b1717708ac964f');
+    formData.append('image', imageFile);
+    const r = await fetch('https://api.imgbb.com/1/upload?expiration=600', {
+        method: 'POST',
+        body: formData,
+    });
+    const d = await r.json();
+    return new Response(d);
 }

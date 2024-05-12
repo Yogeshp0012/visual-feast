@@ -2,7 +2,7 @@
   publish = ".next"
   command = "npm run build"
 [images]
-  remote_images = ["https://images.unsplash.com/.*"]
+  remote_images = ["https://images.unsplash.com/.*","https://i.ibb.co/.*"]
 [functions]
   included_files = [
     "./public/**"

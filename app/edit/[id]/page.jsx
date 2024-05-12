@@ -67,18 +67,22 @@ export default function Edit() {
             formData.append('imageName', imageName);
             formData.append('rotation', rotationAngle);
             formData.append('grayscale', filter);
+            console.log(imageData.image.url)
             if (format == "webp") {
                 formData.append('url', `/.netlify/images?url=${imageData.image.url}&fm=png&q=100`);
             }
             else {
                 formData.append('url', `/.netlify/images?url=${imageData.image.url}&fm=${format.toLowerCase()}&q=100`);
             }
+            console.log(formData);
             const response = await fetch('/api/saveFile', {
                 method: 'POST',
                 body: formData,
             });
+            const data = await response.json()
+            console.log(data);
             if (response.ok) {
-                handleSave(true, imageName);
+                handleSave(true, displayUrl);
                 setRotationAngle(0);
             }
         }
@@ -196,7 +200,7 @@ export default function Edit() {
         }
     }
 
-    const handleSave = async (filtered = false, imageName = "") => {
+    const handleSave = async (filtered = false, displayUrl = "") => {
         if (imageQuality < 1) {
             setImageQuality(1)
         }
@@ -207,29 +211,29 @@ export default function Edit() {
         try {
             addImage({
                 imageID: params.id, imageMetadata: {
-                    name: filtered ? imageName : imageData.image.name,
+                    name: imageData.image.name,
                     width: width,
                     height: height,
                     quality: imageQuality,
                     fit: fit.toLowerCase(),
                     format: format.toLowerCase(),
-                    url: filtered ? `/images/${username}/${imageName}.${format}` : imageData.image.url
+                    url: filtered ? displayUrl : imageData.image.url
                 }
             })
             setImageData({
                 image: {
-                    name: filtered ? imageName : imageData.image.name,
+                    name: imageData.image.name,
                     width: width,
                     height: height,
                     quality: imageQuality,
                     fit: fit.toLowerCase(),
                     format: format.toLowerCase(),
-                    url: filtered ? `/images/${username}/${imageName}.${format}` : imageData.image.url
+                    url: filtered ? displayUrl : imageData.image.url
                 }
             })
             setDisplayImages((prevImages) =>
                 prevImages.map((image) =>
-                    image.imageID === params.id ? { ...image, url: filtered ? `/images/${username}/${imageName}.${format}` : imageData.image.url } : image
+                    image.imageID === params.id ? { ...image, url: filtered ? displayUrl : imageData.image.url } : image
                 )
             );
             setMessage("Image Saved Successfully");
@@ -525,8 +529,8 @@ export default function Edit() {
                 </div></div></div> </>}
             {saving && <><div className="p-4 sm:ml-64"><div className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14">
                 <div className="w-full h-[50vh] items-center justify-center flex">
-                    <div class="w-[30vw] bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
-                        <div class="bg-blue-600 h-2.5 rounded-full" style={{ width: `${saveProgress}%` }}></div>
+                    <div className="w-[30vw] bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                        <div className="bg-blue-600 h-2.5 rounded-full" style={{ width: `${saveProgress}%` }}></div>
                     </div>
 
                 </div></div></div> </>}
