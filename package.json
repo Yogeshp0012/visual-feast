@@ -10,13 +10,17 @@
     },
     "dependencies": {
         "@netlify/blobs": "^7.3.0",
+        "axios": "^1.6.8",
         "blobshape": "^1.0.0",
         "bright": "^0.8.5",
+        "jimp": "^0.22.12",
         "jszip": "^3.10.1",
         "markdown-to-jsx": "^7.4.5",
         "next": "14.2.3",
         "react": "18.3.1",
         "react-dom": "18.3.1",
+        "react-image-effects": "^1.0.0",
+        "react-image-filter": "^0.1.2",
         "unique-names-generator": "^4.7.1"
     },
     "devDependencies": {

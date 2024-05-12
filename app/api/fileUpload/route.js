@@ -2,7 +2,6 @@ import fs from 'fs';
 import { writeFile } from 'fs/promises';
 import path, { join } from 'path';
 
-const uploadFolder = path.join(process.cwd(), 'uploads');
 
 export async function GET(req) {
   return new Response('hi');

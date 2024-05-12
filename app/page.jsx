@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { listImageData, uploadImageData } from "./blobs/homepage-actions";
+import { addHistory } from "./blobs/history-actions";
 import Link from "next/link";
 import { addImage, deleteSelectedImage, listImage } from "./blobs/images-actions";
 import { addPreset, listPresets } from "./blobs/preset-actions";
@@ -110,7 +111,7 @@ export default function Home() {
                         format: format.toLowerCase(),
                         url: data.image.url
                     }
-                })
+                })  
             }
             setMessage("The filters are applied successfully. Please view the image to see the changes.")
             setSuccessSnack(true);
@@ -148,6 +149,7 @@ export default function Home() {
                     url: `https://images.unsplash.com/${url}`
                 }
             })
+            addHistory({imageID: newImage.imageID,imageURL:`https://images.unsplash.com/${url}`})
             setDisplayImages((prevImages) => [...prevImages, newImage]);
             setOpenModal(false);
             setMessage("Image Added Successfully")
@@ -205,12 +207,12 @@ export default function Home() {
                         height: 360,
                         quality: 50,
                         fit: "contain",
-                        format: "webp",
+                        format: "png",
                         url: `/images/${username}/${imageName}.${fileExtension}`
                     }
                 })
-
                 setDisplayImages((prevImages) => [...prevImages, newImage]);
+                addHistory(newImage.imageID,{image:`/images/${username}/${imageName}.${fileExtension}` })
                 setOpenModal(false);
                 setMessage("Image Added Successfully")
                 setSuccessSnack(true);
@@ -242,7 +244,7 @@ export default function Home() {
     const [width, setWidth] = useState(32);
     const [height, setHeight] = useState(38);
     const [fit, setFit] = useState("Contain");
-    const [format, setFormat] = useState("WEBP");
+    const [format, setFormat] = useState("PNG");
     const [fileName, setFileName] = useState("")
     const [imageName, setImageName] = useState(generateRandomFilename('myfile_'))
     const [imageUrl, setImageUrl] = useState("photo-1715128083452-065d5045bac1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwyfHx8ZW58MHx8fHx8")
@@ -395,7 +397,6 @@ export default function Home() {
                                     <option>AVIF</option>
                                     <option>JPG</option>
                                     <option>PNG</option>
-                                    <option>WEBP</option>
                                     <option>GIF</option>
                                     <option>BLURHASH</option>
                                 </select>
