@@ -76,7 +76,6 @@ export default function Home() {
         const zipFilename = 'images.zip';
         const zip = new JSZip();
         for (const image of displayImages) {
-            console.log(image);
             const data = await listImage({ imageID: image.imageID });
             const response = await fetch(`/.netlify/images?url=${data.image.url}&w=${data.image.width}&h=${data.image.height}&fit=${data.image.fit.toLowerCase()}&fm=${data.image.format.toLowerCase()}&q=${data.image.imageQuality}`);
             const d = await response.arrayBuffer();
@@ -108,7 +107,6 @@ export default function Home() {
         try {
             for (const image of displayImages) {
                 const data = await listImage({ imageID: image.imageID });
-                console.log(data);
                 addImage({
                     imageID: image.imageID, imageMetadata: {
                         name: data.image.name,
@@ -233,7 +231,6 @@ export default function Home() {
                     }
                 })
                 setDisplayImages((prevImages) => [...prevImages, newImage]);
-                console.log(newImage.imageID);
                 addHistory({ imageID: newImage.imageID, imageURL: url })
                 setOpenModal(false);
                 setMessage("Image Added Successfully")

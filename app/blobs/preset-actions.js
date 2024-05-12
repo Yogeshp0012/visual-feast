@@ -11,7 +11,6 @@ export async function addPreset({presetData}) {
 
 export async function listPresets() {
     const data = await store().get("presets", { type: 'json' });
-    console.log(data);
     return data;
 }
 

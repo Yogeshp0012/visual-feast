@@ -16,12 +16,10 @@ export async function POST(req) {
   let path = join("./", `public/images/${username}`)
   if (!fs.existsSync(path)) {
     fs.mkdirSync(path, { recursive: true, mode: 0o755 });
-    console.log(`Directory created: ${path}`);
   }
   path = join("./", `public/images/${username}`, imageName+"."+extension)
   const bytes = await file.arrayBuffer();
   const buffer = Buffer.from(bytes);
   await writeFile(path, buffer);
-  console.log(`Open ${path}`);
   return new Response("ok");
 }

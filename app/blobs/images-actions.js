@@ -11,7 +11,6 @@ export async function addImage({ imageID, imageMetadata }) {
 
 export async function listImage({ imageID }) {
     const data = await store().get(imageID, { type: 'json' });
-    console.log(data);
     return data;
 }
 

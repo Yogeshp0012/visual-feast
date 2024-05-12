@@ -22,7 +22,6 @@ export async function POST(req) {
     let path = join("./", `public/images/${username}`)
     if (!fs.existsSync(path)) {
         fs.mkdirSync(path, { recursive: true, mode: 0o755 });
-        console.log(`Directory created: ${path}`);
     }
     let rotatedImageData = Buffer.from(imageBuffer);
     const image = await Jimp.read(imageBuffer);
@@ -41,10 +40,10 @@ export async function POST(req) {
     const formData = new FormData();
     formData.append('key', '8a41ca98e3aace2b66b1717708ac964f');
     formData.append('image', imageFile);
-    const r = await fetch('https://api.imgbb.com/1/upload?expiration=600', {
+    const r = await fetch('https://api.imgbb.com/1/upload', {
         method: 'POST',
         body: formData,
     });
     const d = await r.json();
-    return new Response(d);
+    return new Response(JSON.stringify(d));
 }
