@@ -1,6 +1,6 @@
 [build]
   publish = ".next"
-  command = "npm run build"
+  command = "netlify dev"
 [images]
   remote_images = ["https://images.unsplash.com/.*"]
 [functions]
