@@ -3,3 +3,7 @@
   command = "npm run build"
 [images]
   remote_images = ["https://images.unsplash.com/.*"]
+[functions]
+  included_files = [
+    "./public/**"
+  ]
