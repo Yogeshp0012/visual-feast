@@ -198,11 +198,10 @@ export default function Home() {
         const fileExtension = file.name.split('.').pop();
         try {
             const formData = new FormData();
-            formData.append('file', file);
-            formData.append('username', username);
-            formData.append('name', imageName);
-            formData.append('extension', fileExtension);
-            const response = await fetch('/api/fileUpload', {
+            formData.append('key', '8a41ca98e3aace2b66b1717708ac964f');
+            formData.append('image', file);
+
+            const response = await fetch('https://api.imgbb.com/1/upload?expiration=600', {
                 method: 'POST',
                 body: formData,
             });
@@ -298,7 +297,7 @@ export default function Home() {
 
     }, [username]);
 
-    
+
     const handlePreset = () => {
         listPresets().then((data) => {
             if (data && data.data) {
