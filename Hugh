@@ -1,0 +1,407 @@
+[
+
+    {
+
+        "domain": "www.educative.io",
+
+        "expirationDate": 1743738704.70842,
+
+        "hostOnly": true,
+
+        "httpOnly": true,
+
+        "name": "flask-auth",
+
+        "path": "/",
+
+        "sameSite": null,
+
+        "secure": true,
+
+        "session": false,
+
+        "storeId": null,
+
+        "value": ".eJyLNjM0NzYyNzMwNzaxNDKxMNAx0FEKqHTy980yLAhLN0nLN66wDAutrDItVtIBSybq5eXpJeaUAol0vbxEh_TcxMwcveT8XCW8ciVFpak6aYk5xak6eaU5OTrGEMrQ3MQQaK-RpVksACWYKnM"
+
+    },
+
+    {
+
+        "domain": ".educative.io",
+
+        "expirationDate": 1742098820.820094,
+
+        "hostOnly": false,
+
+        "httpOnly": true,
+
+        "name": "editor-auth",
+
+        "path": "/",
+
+        "sameSite": null,
+
+        "secure": true,
+
+        "session": false,
+
+        "storeId": null,
+
+        "value": "eyJ1c2VyX2lkIjogIjYxNzMyNzYwNzM0OTI0ODAiLCAidG9rZW4iOiAiR1JGVWpDRElFdnhVTGRyOU5STnlQeSIsICJ0b2tlbl90cyI6IDE3NDE4Mzk2MjAwMDB9"
+
+    },
+
+    {
+
+        "domain": "www.educative.io",
+
+        "hostOnly": true,
+
+        "httpOnly": false,
+
+        "name": "enterprise_nav",
+
+        "path": "/",
+
+        "sameSite": null,
+
+        "secure": false,
+
+        "session": true,
+
+        "storeId": null,
+
+        "value": "false"
+
+    },
+
+    {
+
+        "domain": ".educative.io",
+
+        "expirationDate": 1742010704.708359,
+
+        "hostOnly": false,
+
+        "httpOnly": true,
+
+        "name": "magicbox-auth",
+
+        "path": "/",
+
+        "sameSite": null,
+
+        "secure": true,
+
+        "session": false,
+
+        "storeId": null,
+
+        "value": "eyJ1c2VyX2lkIjogNjE3MzI3NjA3MzQ5MjQ4MCwgInRva2VuIjogInVhOWxDcXAzbWEzNXlDMjVUcGxxNkIiLCAidG9rZW5fdHMiOiAxNzQxOTI0MzA0MDAwLCAibG91X3Nlc3Npb24iOiBmYWxzZX0=|9b703fcbac4d9ee143a9ae56bd26efd6eb8343fe"
+
+    },
+
+    {
+
+        "domain": "www.educative.io",
+
+        "expirationDate": 1776484297.105044,
+
+        "hostOnly": true,
+
+        "httpOnly": false,
+
+        "name": "theme",
+
+        "path": "/",
+
+        "sameSite": null,
+
+        "secure": false,
+
+        "session": false,
+
+        "storeId": null,
+
+        "value": "light"
+
+    },
+
+    {
+
+        "domain": "www.educative.io",
+
+        "hostOnly": true,
+
+        "httpOnly": false,
+
+        "name": "subscribed",
+
+        "path": "/",
+
+        "sameSite": null,
+
+        "secure": false,
+
+        "session": true,
+
+        "storeId": null,
+
+        "value": "false"
+
+    },
+
+    {
+
+        "domain": "www.educative.io",
+
+        "expirationDate": 1743738704.708477,
+
+        "hostOnly": true,
+
+        "httpOnly": true,
+
+        "name": "flask-session",
+
+        "path": "/",
+
+        "sameSite": null,
+
+        "secure": true,
+
+        "session": false,
+
+        "storeId": null,
+
+        "value": ".eJx9jb0KwjAYAN_lm0PIn4npJO6ii11EyoekQUnSkjRgFd_dUneXu-GGe0M3uhwxuTRBM-XqCHS1uAzNRXMjhdHMSGWF2jLCCJzm_fHw4GPrVT_Ip23P82tTgKwRaUoUQ13gacKdj3gP9DZE-NvWa4-hOJJqCET-xI3iy1dYff18ASZYNJo.Z9On0A.WXkhLwjtrfcnra1dwVKvxTl-hsQ"
+
+    },
+
+    {
+
+        "domain": ".educative.io",
+
+        "expirationDate": 1741926095.915873,
+
+        "hostOnly": false,
+
+        "httpOnly": true,
+
+        "name": "__cf_bm",
+
+        "path": "/",
+
+        "sameSite": "no_restriction",
+
+        "secure": true,
+
+        "session": false,
+
+        "storeId": null,
+
+        "value": "r0eP4oTGlsHV3XV65bV6FPUSl9zY53oxgWEX7OGNMNk-1741924295-1.0.1.1-UDPZ6th4a5cPP5feQiLuFQjUTDrGnkc2JhhHAdT2ygG0NYdzRg_M7HxdtY_LnRhsy0xoWgJjcTrIVhEbZQVkiNp3YticMarKGFUR0DecHBc"
+
+    },
+
+    {
+
+        "domain": ".www.educative.io",
+
+        "expirationDate": 1773375826,
+
+        "hostOnly": false,
+
+        "httpOnly": false,
+
+        "name": "__stripe_mid",
+
+        "path": "/",
+
+        "sameSite": "strict",
+
+        "secure": true,
+
+        "session": false,
+
+        "storeId": null,
+
+        "value": "efde02a4-cd4f-495f-882e-e30b3bbfeec69be707"
+
+    },
+
+    {
+
+        "domain": "www.educative.io",
+
+        "expirationDate": 1741924604.708032,
+
+        "hostOnly": true,
+
+        "httpOnly": true,
+
+        "name": "cache_token",
+
+        "path": "/",
+
+        "sameSite": null,
+
+        "secure": false,
+
+        "session": false,
+
+        "storeId": null,
+
+        "value": "1741924304-G%2BlV9CWWoMswdYKmkSVaPbfGNLS4DDTVa/c07GPH4lw%3D"
+
+    },
+
+    {
+
+        "domain": "www.educative.io",
+
+        "hostOnly": true,
+
+        "httpOnly": false,
+
+        "name": "enterprise_new_sidebar",
+
+        "path": "/",
+
+        "sameSite": null,
+
+        "secure": false,
+
+        "session": true,
+
+        "storeId": null,
+
+        "value": "true"
+
+    },
+
+    {
+
+        "domain": "www.educative.io",
+
+        "hostOnly": true,
+
+        "httpOnly": false,
+
+        "name": "l2c_subscribed",
+
+        "path": "/",
+
+        "sameSite": null,
+
+        "secure": false,
+
+        "session": true,
+
+        "storeId": null,
+
+        "value": "false"
+
+    },
+
+    {
+
+        "domain": "www.educative.io",
+
+        "expirationDate": 1743738704.708243,
+
+        "hostOnly": true,
+
+        "httpOnly": false,
+
+        "name": "logged_in",
+
+        "path": "/",
+
+        "sameSite": null,
+
+        "secure": true,
+
+        "session": false,
+
+        "storeId": null,
+
+        "value": ""
+
+    },
+
+    {
+
+        "domain": "www.educative.io",
+
+        "hostOnly": true,
+
+        "httpOnly": false,
+
+        "name": "recommendations",
+
+        "path": "/",
+
+        "sameSite": null,
+
+        "secure": false,
+
+        "session": true,
+
+        "storeId": null,
+
+        "value": "true"
+
+    },
+
+    {
+
+        "domain": "www.educative.io",
+
+        "hostOnly": true,
+
+        "httpOnly": false,
+
+        "name": "trial_availed",
+
+        "path": "/",
+
+        "sameSite": null,
+
+        "secure": false,
+
+        "session": true,
+
+        "storeId": null,
+
+        "value": "true"
+
+    },
+
+    {
+
+        "domain": "www.educative.io",
+
+        "expirationDate": 1776484297.108189,
+
+        "hostOnly": true,
+
+        "httpOnly": false,
+
+        "name": "use_system_preference",
+
+        "path": "/",
+
+        "sameSite": null,
+
+        "secure": false,
+
+        "session": false,
+
+        "storeId": null,
+
+        "value": "personal"
+
+    }
+
+]
